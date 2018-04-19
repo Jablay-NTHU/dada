@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
-ruby '2.4.1'
+ruby '2.5.1'
 
 # Web API
-gem 'json'
-gem 'puma'
 gem 'roda'
+gem 'puma'
+gem 'json'
 
 # Security
 gem 'rbnacl-libsodium'
