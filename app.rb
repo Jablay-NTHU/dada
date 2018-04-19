@@ -7,8 +7,8 @@ require 'base64'
 require_relative 'models/experiment'
 
 module Experima
-	#Web controller for Experima API
-	class API < roda
+	# Web controller for Experima API
+	class Api < Roda
 		plugin :environments
 		plugin :halt
 
@@ -19,14 +19,14 @@ module Experima
 		route do |routing|
 			response['Content-Type'] = 'application/json'
 
-			routing.root.do 
+			routing.root do 
 				{ message: 'ExperimaAPI up at /api/v1'}.to_json
 			end
 
 			routing.on 'api' do 
 				routing.on 'v1' do
 					routing.on 'experiment' do
-						# POST api/v1/experiment/[ID]
+						# GET api/v1/experiment/[ID]
 						routing.get String do |id|
 							Experiment.find(id).to_json
 						rescue StandardError				

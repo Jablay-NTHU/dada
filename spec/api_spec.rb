@@ -38,12 +38,11 @@ describe 'Test Experima Web API' do
     end
 
     it 'HAPPY: should be able to get details of a single experiment' do
-      Experima::Experiment.new(DATA[0]).save
+      Experima::Experiment.new(DATA[1]).save
+      #id = file name
       id = Dir.glob('db/*.txt').first.split(%r{[/\.]})[1]
-
       get "/api/v1/experiment/#{id}"
       result = JSON.parse last_response.body
-
       _(last_response.status).must_equal 200
       _(result['id']).must_equal id
     end
