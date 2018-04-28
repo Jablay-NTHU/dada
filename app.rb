@@ -39,21 +39,42 @@ module Dada
               routing.on 'requests' do
                 # GET api/v1/project/[proj_id]/requests
                 routing.get do
-                  { message: 'Get all requests info given a project' }.to_json
+                  output = { data: Project.first(id: proj_id).requests }
+                  JSON.pretty_generate(output)
+                rescue StandardError
+                  routing.halt 404, { message: 'Could not find requests' }.to_json
                 end
               end
 
               routing.on 'request' do
+                @req_route = "#{@api_root}/project/#{proj_id}/request"
                 # GET api/v1/project/[proj_id]/request/[req_id]
                 routing.on String do |req_id|
                   routing.get do
-                    { message: "Get a request info #{req_id} given a project #{proj_id}" }.to_json
+                    req = Request.where(project_id: proj_id, id: req_id).first
+                    req ? req.to_json : raise('Request not found')
+                  rescue StandardError => error
+                    routing.halt 404, { message: error.message }.to_json
                   end
                 end
 
                 # POST api/v1/project/[proj_id]/request
                 routing.post do
-                  { message: 'Post a new request API Call' }.to_json
+                  # { message: 'Post a new request API Call' }.to_json
+                  new_data = JSON.parse(routing.body.read)
+                  proj = Project.first(id: proj_id)
+                  new_req = proj.add_request(new_data)
+
+                  if new_req
+                    response.status = 201
+                    response['Location'] = "#{@req_route}/#{new_req.id}"
+                    { message: 'Request saved', data: new_req }.to_json
+                  else
+                    routing.halt 400, 'Could not save request'
+                  end
+
+                rescue StandardError
+                  routing.halt 500, { message: 'Database error' }.to_json
                 end
               end
 
@@ -73,7 +94,7 @@ module Dada
               raise('Could not save project') unless new_proj.save
 
               response.status = 201
-              response['Location'] = "#{@proj_route}/#{new_proj.id}"
+              response['Location'] = "#{@projects_route}/#{new_proj.id}"
               { message: 'Project saved', data: new_proj }.to_json
             rescue StandardError => error
               routing.halt 400, { message: error.message }.to_json

@@ -13,6 +13,6 @@ def wipe_database
 end
 
 DATA = {}
-DATA[:responses] = YAML.safe_load File.read('db/seeds/response_seeds.yml')
-DATA[:documents] = YAML.safe_load File.read('db/seeds/request_seeds.yml')
 DATA[:projects] = YAML.safe_load File.read('db/seeds/project_seeds.yml')
+DATA[:requests] = YAML.safe_load File.read('db/seeds/request_seeds.yml')
+DATA[:responses] = YAML.safe_load File.read('db/seeds/response_seeds.yml')

@@ -1,12 +1,11 @@
 ---
-- scheduled: 'once'
-  api_url: 'www.motc.gov/v1/bus/routes/city/#{0}'
+- api_url: 'www.motc.gov/v1/bus/routes/city/#{0}'
+  scheduled: 'once'
   parameters: '"---\n-key: something\n  another: value"'
   date_start: '2018-04-28'
   date_end: '2018-04-28'
-- scheduled: 'weekly sunday'
-  api_url: 'www.motc.gov/v1/bus/stops/city/#{0}'
+- api_url: 'www.motc.gov/v1/bus/stops/city/#{0}' 
+  scheduled: 'weekly sunday'
   parameters: '"---\n-key: something\n  another: value"'
-  secret_token_secure: '2018-04-29'
-  public_url_secure: '2018-04-29'
-
+  date_start: '2018-04-29'
+  date_end: '2018-04-29'
