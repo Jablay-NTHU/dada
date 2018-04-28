@@ -21,8 +21,7 @@ module Dada
             attributes: {
               id: id,
               title: title,
-              descriptions: descriptions,
-              user_id: user_id,
+              description: description,
               secret_token_secure: secret_token_secure,
               public_url_secure: public_url_secure
             }

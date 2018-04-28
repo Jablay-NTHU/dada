@@ -8,9 +8,9 @@ Sequel.migration do
       primary_key :id
 
       String :title, null: false
-      String :descriptions
-      String :secret_content_secure
-      String :public_url_secure, unique: true
+      String :description, null: true
+      String :secret_token_secure, null: false
+      String :public_url_secure, null: true, unique: true
 
       DateTime :created_at
       DateTime :updated_at

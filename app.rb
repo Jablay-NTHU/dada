@@ -27,43 +27,56 @@ module Dada
 
             # GET api/v1/projects
             routing.get do
-              { message: 'Get all projects info' }.to_json
+              output = { data: Project.all }
+              JSON.pretty_generate(output)
+            rescue StandardError
+              routing.halt 404, { message: 'Could not find projects' }.to_json
             end
           end
 
           routing.on 'project' do
-            routing.on String do |id_proj|
-
+            routing.on String do |proj_id|
               routing.on 'requests' do
-                # GET api/v1/project/[id_proj]/requests
+                # GET api/v1/project/[proj_id]/requests
                 routing.get do
                   { message: 'Get all requests info given a project' }.to_json
                 end
               end
 
               routing.on 'request' do
-                # GET api/v1/project/[id_proj]/request/[id_req]
-                routing.on String do |id_req|
+                # GET api/v1/project/[proj_id]/request/[req_id]
+                routing.on String do |req_id|
                   routing.get do
-                    { message: "Get a request info #{id_req} given a project #{id_proj}" }.to_json
+                    { message: "Get a request info #{req_id} given a project #{proj_id}" }.to_json
                   end
                 end
 
-                # POST api/v1/project/[ID]/request
+                # POST api/v1/project/[proj_id]/request
                 routing.post do
                   { message: 'Post a new request API Call' }.to_json
                 end
               end
 
-              # GET api/v1/project/[ID]
+              # GET api/v1/project/[proj_id]
               routing.get do
-                { message: "Get a project #{id_proj} info" }.to_json
-              end              
+                proj = Project.first(id: proj_id)
+                proj ? proj.to_json : raise('Project not found')
+              rescue StandardError => error
+                routing.halt 404, { message: error.message }.to_json
+              end
             end
 
             # POST api/v1/project
             routing.post do
-              { message: 'Post a new project' }.to_json
+              new_data = JSON.parse(routing.body.read)
+              new_proj = Project.new(new_data)
+              raise('Could not save project') unless new_proj.save
+
+              response.status = 201
+              response['Location'] = "#{@proj_route}/#{new_proj.id}"
+              { message: 'Project saved', data: new_proj }.to_json
+            rescue StandardError => error
+              routing.halt 400, { message: error.message }.to_json
             end
           end
         end
