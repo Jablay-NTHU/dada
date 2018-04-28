@@ -8,7 +8,7 @@ Sequel.migration do
       primary_key :id
       foreign_key :request_id, table: :requests
 
-      String :status_code, null: false
+      Integer :status_code, null: false
       String :header_secure, null: false
       String :body_secure, null: false
 

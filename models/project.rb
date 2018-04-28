@@ -1,84 +1,35 @@
+
 # frozen_string_literal: true
 
 require 'json'
-require 'base64'
-require 'rbnacl/libsodium'
+require 'sequel'
 
 module Dada
-  # Holds a full secret document
-  class Project
-    STORE_DIR = 'db/'
+  # Models a project
+  class Project < Sequel::Model
+    one_to_many :requests
+    plugin :association_dependencies, requests: :destroy
 
-    # Create a new experiment by passing in hash of data
-    def initialize(new_file)
-      @id           = new_file['id'] || new_id
-      @title        = new_file['title']
-      @description  = new_file['description']
-      @id_user      = new_file['id_user']
-      @secret_token_secure = encode_content(new_file['secret_token_secure'])
-      @public_url_secure   = encode_content(new_file['public_url_secure'])
-    end
+    plugin :timestamps
 
-    attr_reader :id, :title, :description, :id_user
-
-    def secret_content_secure
-      decode_content(@secret_content_secure)
-    end
-
-    def public_url_secure
-      decode_content(@public_url_secure)
-    end
-
-    def save
-      File.open(STORE_DIR + id + '.txt', 'w') do |file|
-        file.write(to_json)
-      end
-
-      true
-    rescue StandardError
-      false
-    end
-
-    # note: this is not the preferred format for JSON objects
-    # see: http://jsonapi.org
+    # rubocop:disable MethodLength
     def to_json(options = {})
-      JSON({ type: 'document',
-             id: @id,
-             title: @title,
-             description: @description,
-             id_user: @id_user,
-             secret_content_secure: @secret_content_secure,
-             public_url_secure: @public_url_secure }, options)
+      JSON(
+        {
+          data: {
+            type: 'project',
+            attributes: {
+              id: id,
+              title: title,
+              descriptions: descriptions,
+              user_id: user_id,
+              secret_token_secure: secret_token_secure,
+              public_url_secure: public_url_secure
+            }
+          }
+        }, options
+      )
     end
-
-    def self.setup
-      Dir.mkdir(STORE_DIR) unless Dir.exist? STORE_DIR
-    end
-
-    def self.find(find_id)
-      document_file = File.read(STORE_DIR + find_id + '.txt')
-      Project.new JSON.parse(document_file)
-    end
-
-    def self.all
-      Dir.glob(STORE_DIR + '*.txt').map do |filename|
-        filename.match(/#{Regexp.quote(STORE_DIR)}(.*)\.txt/)[1]
-      end
-    end
-
-    private
-
-    def new_id
-      timestamp = Time.now.to_f.to_s
-      Base64.urlsafe_encode64(RbNaCl::Hash.sha256(timestamp))[0..9]
-    end
-
-    def encode_content(content)
-      Base64.strict_encode64(content)
-    end
-
-    def decode_content(encoded_content)
-      Base64.strict_decode64(encoded_content)
-    end
+    # rubocop:enable MethodLength
   end
 end

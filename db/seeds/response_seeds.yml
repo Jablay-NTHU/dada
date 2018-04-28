@@ -1,0 +1,7 @@
+---
+- status_code: '200'
+  header_secure: '"---\n-key: something\n  another: value"'
+  body_secure: '"---\n-key: amazing\n  another: secrets"'
+- status_code: '404'
+  header_secure: '"---\n-key: something\n  another: value"'
+  body_secure: '"---\n-key: super\n  another: lies"'
