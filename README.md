@@ -1,41 +1,40 @@
-# Experima
+# Dada
 
-Experima is a platform that help researchers to build behavioral reseearch with ease, flexibility, and security in hand.
+Dada is an API to call another API and store the data and retrieve it to another format (csv, etc)
 
-## Feature
+## Routes
 
-- User's don't need to know any programming (simply drag and drop, fill form)
-- Your experiment data is totally secure
-- Experiment feature (random assignment, pre-testing)
-- Analytics (not sure yet, which kind of analytics will be put)
-- Connect to Amazon Mechanical Turk (Participant and Payment)
-  - or maybe we can accept another pool participant platform channel
+All routes return Json
 
-## Existing Solution
+- GET `/`: Root route shows if Web API is running
+- GET `api/v1/projects/`: returns all projects IDs
+- GET `api/v1/projects/[ID_Pro]`: returns details about a single projects with given ID Project
+- GET `api/v1/projects/[ID_Pro]/request/[ID_Req]`: returns details about a single request with given ID Project
+- GET `api/v1/projects/[ID_Pro]/request/[ID_Req]/responses/[ID_Res]`: returns details about a single responses with given ID
 
-- Amazon Mechanical Turk
-  - Functionality of designing experiment in AMT is quite limited
-  - Not specific for conducting behavioral research.
-- oTree <http://www.otree.org/>
-  - You need to do some programming, handling database, etc which also mean to handle your security by yourself.
-  - They do provide some existing behavioral experiment template
-  - Multiplayer game --> sounds cool
-  - Demo on how its work, see <https://www.youtube.com/watch?v=t_Z9AM7PfdI>
-  - A paper they publish about the platform, see <https://www.sciencedirect.com/science/article/pii/S2214635016000101>
-  - It's a open source, but done with phyton
-- prolific <https://prolific.ac>
-  - Provide pool participants like Amazon Mechanical Turk
-  - Demo on how its work, see <https://www.youtube.com/watch?v=razqzJy7aSA>
-  - A paper they publish <https://www.sciencedirect.com/science/article/pii/S2214635017300989>
-  - They still used different system to design the experiment, and system are not handle the data integrity very well.
+- POST `api/v1/projects/[]`: creates a new project
+- POST `api/v1/projects/[IDP]/request/[]`: creates a new request for API Call with given ID project
 
-## Our plan
+## Install
 
-1. Select one of the real case study to implement.
-2. Make a MVP for those case study.
-3. Maybe we can also write an article for this platform.
+Install this API by cloning the *relevant branch* and installing required gems from `Gemfile.lock`:
 
-## Challenge
+```shell
+bundle install
+```
 
-1. Cater all possibility of experiment design and offer it with ease.
-2. Monetizing? Maintenance cost?
+## Test
+
+Run the test script:
+
+```shell
+ruby spec/api_spec.rb
+```
+
+## Execute
+
+Run this API using:
+
+```shell
+rackup
+```
