@@ -4,24 +4,29 @@ require 'json'
 require 'base64'
 require 'rbnacl/libsodium'
 
-module Experima
+module Dada
   # Holds a full secret document
-  class Experiment
+  class Project
     STORE_DIR = 'db/'
 
     # Create a new experiment by passing in hash of data
     def initialize(new_file)
-      @id          = new_file['id'] || new_id
-      @researcher  = new_file['researcher']
-      @name        = new_file['name']
-      @description = new_file['description']
-      @content     = encode_content(new_file['content'])
+      @id           = new_file['id'] || new_id
+      @title        = new_file['title']
+      @description  = new_file['description']
+      @id_user      = new_file['id_user']
+      @secret_token_secure = encode_content(new_file['secret_token_secure'])
+      @public_url_secure   = encode_content(new_file['public_url_secure'])
     end
 
-    attr_reader :id, :researcher, :name, :description
+    attr_reader :id, :title, :description, :id_user
 
-    def content
-      decode_content(@content)
+    def secret_content_secure
+      decode_content(@secret_content_secure)
+    end
+
+    def public_url_secure
+      decode_content(@public_url_secure)
     end
 
     def save
@@ -39,10 +44,11 @@ module Experima
     def to_json(options = {})
       JSON({ type: 'document',
              id: @id,
-             researcher: @researcher,
-             name: @name,
+             title: @title,
              description: @description,
-             content: content }, options)
+             id_user: @id_user,
+             secret_content_secure: @secret_content_secure,
+             public_url_secure: @public_url_secure }, options)
     end
 
     def self.setup
@@ -51,8 +57,7 @@ module Experima
 
     def self.find(find_id)
       document_file = File.read(STORE_DIR + find_id + '.txt')
-
-      Experiment.new JSON.parse(document_file)
+      Project.new JSON.parse(document_file)
     end
 
     def self.all

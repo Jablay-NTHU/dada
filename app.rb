@@ -4,7 +4,7 @@ require 'json'
 require 'roda'
 require 'base64'
 
-require_relative 'models/experiment'
+require_relative 'models/project'
 
 module Dada
   # Web controller for Dada API
@@ -13,7 +13,7 @@ module Dada
     plugin :halt
 
     configure do
-      Experiment.setup
+      Project.setup
     end
 
     route do |routing|
@@ -24,28 +24,30 @@ module Dada
       end
       routing.on 'api' do
         routing.on 'v1' do
-          routing.on 'experiment' do
-            # GET api/v1/experiment/[ID]
+          routing.on 'project' do
+            # GET api/v1/project/[ID]
             routing.get String do |id|
-              Experiment.find(id).to_json
+              Project.find(id).to_json                          
             rescue StandardError
-              routing.halt 404, { message: 'Experiment not found' }.to_json
+              routing.halt 404, { message: 'Project not found' }.to_json
             end
-            # GET api/v1/experiment
-            routing.get do
-              output = { experiment_ids: Experiment.all }
-              JSON.pretty_generate(output)
-            end
-            # POST api/v1/experiment
+            # POST api/v1/project
             routing.post do
               new_data = JSON.parse(routing.body.read)
-              new_exp = Experiment.new(new_data)
+              new_exp = Project.new(new_data)
               if new_exp.save
                 response.status = 201
-                { message: 'Experiment saved', id: new_exp.id }.to_json
+                { message: 'Project saved', id: new_exp.id }.to_json
               else
                 routing.halt 400, { message: "Couldn't save project" }.to_json
               end
+            end
+          end
+          routing.on 'projects' do
+            # GET api/v1/projects
+            routing.get do
+              output = { project_ids: Project.all }
+              JSON.pretty_generate(output)
             end
           end
         end
