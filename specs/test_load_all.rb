@@ -4,10 +4,11 @@
 require 'rack/test'
 include Rack::Test::Methods
 
-require_relative '../app'
-require_relative '../models/project'
-require_relative '../models/request'
-require_relative '../models/response'
+require_relative '../init'
+# require_relative '../app'
+# require_relative '../models/project'
+# require_relative '../models/request'
+# require_relative '../models/response'
 
 def app
   Dada::Api
