@@ -11,7 +11,10 @@ module Dada
     one_to_many :responses
     plugin :association_dependencies, responses: :destroy
 
+
     plugin :timestamps
+    plugin :whitelist_security
+    set_allowed_columns()
 
     # rubocop:disable MethodLength
     def to_json(options = {})
