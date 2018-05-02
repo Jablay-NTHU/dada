@@ -46,17 +46,13 @@ describe 'Test Request Handling' do
     _(last_response.status).must_equal 404
   end
 
-describe 'Creating request' do
   it 'HAPPY: should be able to create new request' do
+    proj = Dada::Project.first
+    req_data = DATA[:requests][1]
 
-    before do
-      @proj = Dada::Project.first
-      @req_data = DATA[:requests][1]
-      @req_header = { 'CONTENT_TYPE' => 'application/json' }
-    end
- 
-    post "api/v1/project/#{@proj.id}/request",
-         @req_data.to_json, @req_header
+    req_header = { 'CONTENT_TYPE' => 'application/json' }
+    post "api/v1/project/#{proj.id}/request",
+         req_data.to_json, req_header
     _(last_response.status).must_equal 201
     _(last_response.header['Location'].size).must_be :>, 0
 
@@ -64,17 +60,7 @@ describe 'Creating request' do
     req = Dada::Request.first
 
     _(created['id']).must_equal req.id
-    _(created['api_url']).must_equal @req_data['api_url']
-    _(created['scheduled']).must_equal @req_data['scheduled']
-  end
-
-  it 'BAD: should not create request with illegal attributes' do
-    bad_data = @req_data.clone
-    bad_data['id'] = '1111'
-    post "api/v1/project/#{@proj.id}/request",
-         bad_data.to_json, @req_header
-
-    _(last_response.status).must_equal 400
-    _(last_response.header['Location']).must_be_nil
+    _(created['api_url']).must_equal req_data['api_url']
+    _(created['scheduled']).must_equal req_data['scheduled']
   end
 end
