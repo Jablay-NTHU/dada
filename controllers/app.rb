@@ -25,15 +25,13 @@ module Dada
 
           routing.on 'projects' do
             @proj_route = "#{@api_root}/projects"
-            
             # GET api/v1/projects
             routing.get do
-                output = { data: Project.all }
-                JSON.pretty_generate(output)
-              rescue StandardError
-                routing.halt 404, { message: 'Could not find projects' }.to_json
-              end
-
+              output = { data: Project.all }
+              JSON.pretty_generate(output)
+            rescue StandardError
+              routing.halt 404, { message: 'Could not find projects' }.to_json
+            end
           end
 
           routing.on 'project' do
@@ -62,19 +60,16 @@ module Dada
 
                 # POST api/v1/project/[proj_id]/request
                 routing.post do
-                  # { message: 'Post a new request API Call' }.to_json
                   new_data = JSON.parse(routing.body.read)
                   proj = Project.first(id: proj_id)
                   new_req = proj.add_request(new_data)
+                  raise('Could not save request') unless new_req.save
 
-                  if new_req
-                    response.status = 201
-                    response['Location'] = "#{@req_route}/#{new_req.id}"
-                    { message: 'Request saved', data: new_req }.to_json
-                  else
-                    routing.halt 400, 'Could not save request'
-                  end
-
+                  response.status = 201
+                  response['Location'] = "#{@req_route}/#{new_req.id}"
+                  { message: 'Request saved', data: new_req }.to_json
+                rescue Sequel::MassAssignmentRestriction
+                  routing.halt 400, { message: 'Illegal Request' }.to_json
                 rescue StandardError
                   routing.halt 500, { message: 'Database error' }.to_json
                 end
@@ -98,6 +93,8 @@ module Dada
               response.status = 201
               response['Location'] = "#{@projects_route}/#{new_proj.id}"
               { message: 'Project saved', data: new_proj }.to_json
+            rescue Sequel::MassAssignmentRestriction
+              routing.halt 400, { message: 'Illegal Request' }.to_json
             rescue StandardError => error
               routing.halt 400, { message: error.message }.to_json
             end
@@ -131,14 +128,13 @@ module Dada
                   new_data = JSON.parse(routing.body.read)
                   req = Request.first(id: req_id)
                   new_res = req.add_response(new_data)
+                  raise('Could not save Response') unless new_res.save
 
-                  if new_res
-                    response.status = 201
-                    response['Location'] = "#{@res_route}/#{new_res.id}"
-                    { message: 'Response saved', data: new_res }.to_json
-                  else
-                    routing.halt 400, 'Could not save response'
-                  end
+                  response.status = 201
+                  response['Location'] = "#{@res_route}/#{new_res.id}"
+                  { message: 'Response saved', data: new_res }.to_json
+                rescue Sequel::MassAssignmentRestriction
+                  routing.halt 400, { message: 'Illegal Request' }.to_json
                 rescue StandardError
                   routing.halt 500, { message: 'Database error' }.to_json
                 end
