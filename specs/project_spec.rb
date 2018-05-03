@@ -39,14 +39,14 @@ describe 'Test Project Handling' do
 
     _(last_response.status).must_equal 404
   end
-  
+
   describe 'Creating New Projects' do
-  
+
     before do
       @req_header = { 'CONTENT_TYPE' => 'application/json' }
       @proj_data = DATA[:projects][1]
     end
-  
+
     it 'HAPPY: should be able to create new projects' do
       post 'api/v1/project', @proj_data.to_json, @req_header
       _(last_response.status).must_equal 201
