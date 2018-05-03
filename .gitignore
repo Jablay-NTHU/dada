@@ -1,2 +1,2 @@
 db/*.*
-config/app.yml
+config/secrets.yml

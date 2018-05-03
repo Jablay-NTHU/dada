@@ -53,8 +53,7 @@ module Dada
                 # GET api/v1/project/[proj_id]/request/[req_id]
                 routing.on String do |req_id|
                   routing.get do
-                    req = Request.where(project_id: $proj_id, id: $req_id).first
-                    req.call(:select, proj_id: proj_id, req_id: req_id)
+                    req = Request.where(project_id: proj_id, id: req_id).first
                     req ? req.to_json : raise('Request not found')
                   rescue StandardError => error
                     routing.halt 404, { message: error.message }.to_json

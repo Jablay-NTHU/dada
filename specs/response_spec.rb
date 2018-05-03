@@ -11,6 +11,7 @@ describe 'Test Response Handling' do
     DATA[:requests].each do |request_data|
       Dada::Request.create(request_data)
     end
+
   end
 
   it 'HAPPY: should be able to get list of all requests' do
@@ -36,7 +37,7 @@ describe 'Test Response Handling' do
 
     result = JSON.parse last_response.body
     _(result['data']['attributes']['id']).must_equal res.id
-    _(result['data']['attributes']['body_secure']).must_equal res_data['body_secure']
+    _(result['data']['attributes']['body']).must_equal res_data['body']
   end
 
   it 'SAD: should return error if unknown document requested' do
@@ -45,8 +46,8 @@ describe 'Test Response Handling' do
 
     _(last_response.status).must_equal 404
   end
-  describe 'Creating New Response' do
 
+  describe 'Creating New Response' do
     before do
       @req = Dada::Request.first
       @res_data = DATA[:responses][1]
@@ -63,8 +64,8 @@ describe 'Test Response Handling' do
       res = Dada::Response.first
 
       _(created['id']).must_equal res.id
-      _(created['header_secure']).must_equal @res_data['header_secure']
-      _(created['body_secure']).must_equal @res_data['body_secure']
+      _(created['header']).must_equal @res_data['header']
+      _(created['body']).must_equal @res_data['body']
     end
 
     it 'BAD: should not create response with illegal attributes' do

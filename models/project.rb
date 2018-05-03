@@ -14,20 +14,20 @@ module Dada
 
     set_allowed_columns :title, :description, :secret_token, :public_url
 
-    def secret_token=(plaintext)
-      self.secret_token_secure = SecureDB.encrypt(plaintext)
-    end
-
     def secret_token
       SecureDB.decrypt(self.secret_token_secure)
     end
 
-    def public_url=(plaintext)
-      self.public_url_secure = SecureDB.encrypt(plaintext)
+    def secret_token=(plaintext)
+      self.secret_token_secure = SecureDB.encrypt(plaintext)
     end
-
+    
     def public_url
       SecureDB.decrypt(self.public_url_secure)
+    end
+
+    def public_url=(plaintext)
+      self.public_url_secure = SecureDB.encrypt(plaintext)
     end
 
     # rubocop:disable MethodLength
@@ -40,8 +40,8 @@ module Dada
               id: id,
               title: title,
               description: description,
-              secret_token_secure: secret_token_secure,
-              public_url_secure: public_url_secure
+              secret_token: secret_token,
+              public_url: public_url
             }
           }
         }, options
