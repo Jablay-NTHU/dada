@@ -35,6 +35,8 @@ module Dada
       def self.DB
         DB
       end
+
+      SecureDB.setup(config)
     end
   end
 end

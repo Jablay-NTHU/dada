@@ -29,16 +29,10 @@ task :console => :print_env do
   sh 'pry -r ./specs/test_load_all'
 end
 
-namespace :newkey do
-  desc 'Create sample cryptographic key for database'
-  task :db do
-    require './lib/secure_db'
-    puts "DB_KEY: #{SecureDB.generate_key}"
-  end
-end
-
 namespace :db do
-  require_relative 'config/environments.rb' # load config info
+  require_relative 'lib/init' # load libraries
+  require_relative 'config/init' # load config info
+  # require_relative 'config/environments.rb' # load config info
   require 'sequel'
 
   Sequel.extension :migration
@@ -70,4 +64,13 @@ namespace :db do
 
   desc 'Delete and migrate again'
   task reset: [:drop, :migrate]
+end
+
+
+namespace :newkey do
+  desc 'Create sample cryptographic key for database'
+  task :db do
+    require './lib/secure_db'
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
 end
