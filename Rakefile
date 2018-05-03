@@ -29,6 +29,14 @@ task :console => :print_env do
   sh 'pry -r ./specs/test_load_all'
 end
 
+namespace :newkey do
+  desc 'Create sample cryptographic key for database'
+  task :db do
+    require './lib/secure_db'
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
+end
+
 namespace :db do
   require_relative 'config/environments.rb' # load config info
   require 'sequel'
