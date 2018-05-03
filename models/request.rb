@@ -9,9 +9,12 @@ module Dada
     many_to_one :project
 
     one_to_many :responses
+
     plugin :association_dependencies, responses: :destroy
     plugin :timestamps
     plugin :whitelist_security
+
+    set_allowed_columns :project_id, :api_url, :scheduled, :parameters, :date_start, :date_end
 
     # rubocop:disable MethodLength
     def to_json(options = {})
