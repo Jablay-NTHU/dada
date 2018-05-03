@@ -74,8 +74,8 @@ describe 'Test Request Handling' do
       bad_data['created_at'] = '1900-01-01'
       post "api/v1/project/#{@proj.id}/request",
            bad_data.to_json, @req_header
-      # problem ask bimo why I get 500
-      _(last_response.status).must_equal 500
+
+      _(last_response.status).must_equal 400
       _(last_response.header['Location']).must_be_nil
     end
   end
