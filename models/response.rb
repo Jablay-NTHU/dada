@@ -9,6 +9,9 @@ module Dada
     many_to_one :request
 
     plugin :timestamps
+    plugin :whitelist_security
+
+    set_allowed_columns :request_id, :status_code, :header_secure, :body_secure
 
     # rubocop:disable MethodLength
     def to_json(options = {})

@@ -40,19 +40,34 @@ describe 'Test Project Handling' do
     _(last_response.status).must_equal 404
   end
 
-  it 'HAPPY: should be able to create new projects' do
-    existing_proj = DATA[:projects][1]
+  describe 'Creating New Projects' do
 
-    req_header = { 'CONTENT_TYPE' => 'application/json' }
-    post 'api/v1/project', existing_proj.to_json, req_header
-    _(last_response.status).must_equal 201
-    _(last_response.header['Location'].size).must_be :>, 0
+    before do
+      @req_header = { 'CONTENT_TYPE' => 'application/json' }
+      @proj_data = DATA[:projects][1]
+    end
 
-    created = JSON.parse(last_response.body)['data']['data']['attributes']
-    proj = Dada::Project.first
+    it 'HAPPY: should be able to create new projects' do
+      post 'api/v1/project', @proj_data.to_json, @req_header
+      _(last_response.status).must_equal 201
+      _(last_response.header['Location'].size).must_be :>, 0
+      # created is response result
+      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      proj = Dada::Project.first
 
-    _(created['id']).must_equal proj.id
-    _(created['title']).must_equal existing_proj['title']
-    _(created['description']).must_equal existing_proj['description']
+      _(created['id']).must_equal proj.id
+      _(created['title']).must_equal @proj_data['title']
+      _(created['description']).must_equal @proj_data['description']
+    end
+
+    it 'BAD: should not create project with illegal attributes' do
+      bad_data = @proj_data.clone
+      bad_data['created_at'] = '1900-01-01'
+      post 'api/v1/project', bad_data.to_json, @req_header
+
+      _(last_response.status).must_equal 400
+      _(last_response.header['Location']).must_be_nil
+    end
   end
+
 end

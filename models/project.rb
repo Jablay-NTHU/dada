@@ -12,6 +12,8 @@ module Dada
     plugin :timestamps
     plugin :whitelist_security
 
+    set_allowed_columns :title, :description, :secret_token_secure, :public_url_secure
+
     # rubocop:disable MethodLength
     def to_json(options = {})
       JSON(

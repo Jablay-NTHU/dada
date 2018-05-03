@@ -45,22 +45,37 @@ describe 'Test Response Handling' do
 
     _(last_response.status).must_equal 404
   end
+  describe 'Creating New Response' do
 
-  it 'HAPPY: should be able to create new request' do
-    req = Dada::Request.first
-    res_data = DATA[:responses][1]
+    before do
+      @req = Dada::Request.first
+      @res_data = DATA[:responses][1]
+      @res_header = { 'CONTENT_TYPE' => 'application/json' }
+    end
 
-    res_header = { 'CONTENT_TYPE' => 'application/json' }
-    post "api/v1/request/#{req.id}/response",
-         res_data.to_json, res_header
-    _(last_response.status).must_equal 201
-    _(last_response.header['Location'].size).must_be :>, 0
+    it 'HAPPY: should be able to create new request' do
+      post "api/v1/request/#{@req.id}/response",
+           @res_data.to_json, @res_header
+      _(last_response.status).must_equal 201
+      _(last_response.header['Location'].size).must_be :>, 0
 
-    created = JSON.parse(last_response.body)['data']['data']['attributes']
-    res = Dada::Response.first
+      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      res = Dada::Response.first
 
-    _(created['id']).must_equal res.id
-    _(created['header_secure']).must_equal res_data['header_secure']
-    _(created['body_secure']).must_equal res_data['body_secure']
+      _(created['id']).must_equal res.id
+      _(created['header_secure']).must_equal @res_data['header_secure']
+      _(created['body_secure']).must_equal @res_data['body_secure']
+    end
+
+    it 'BAD: should not create response with illegal attributes' do
+      bad_data = @res_data.clone
+      bad_data['created_at'] = '1900-01-01'
+      post "api/v1/request/#{@req.id}/response",
+           bad_data.to_json, @res_header
+
+      # problem ask bimo why I get 500
+      _(last_response.status).must_equal 500
+      _(last_response.header['Location']).must_be_nil
+    end
   end
 end

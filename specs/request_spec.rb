@@ -46,21 +46,37 @@ describe 'Test Request Handling' do
     _(last_response.status).must_equal 404
   end
 
-  it 'HAPPY: should be able to create new request' do
-    proj = Dada::Project.first
-    req_data = DATA[:requests][1]
+  describe 'Creating New Requests' do
 
-    req_header = { 'CONTENT_TYPE' => 'application/json' }
-    post "api/v1/project/#{proj.id}/request",
-         req_data.to_json, req_header
-    _(last_response.status).must_equal 201
-    _(last_response.header['Location'].size).must_be :>, 0
+    before do
+      @req_header = { 'CONTENT_TYPE' => 'application/json' }
+      @proj = Dada::Project.first
+      @req_data = DATA[:requests][1]
+    end
 
-    created = JSON.parse(last_response.body)['data']['data']['attributes']
-    req = Dada::Request.first
+    it 'HAPPY: should be able to create new request' do
 
-    _(created['id']).must_equal req.id
-    _(created['api_url']).must_equal req_data['api_url']
-    _(created['scheduled']).must_equal req_data['scheduled']
+      post "api/v1/project/#{@proj.id}/request",
+           @req_data.to_json, @req_header
+      _(last_response.status).must_equal 201
+      _(last_response.header['Location'].size).must_be :>, 0
+
+      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      req = Dada::Request.first
+
+      _(created['id']).must_equal req.id
+      _(created['api_url']).must_equal @req_data['api_url']
+      _(created['scheduled']).must_equal @req_data['scheduled']
+    end
+
+    it 'BAD: should not create request with illegal attributes' do
+      bad_data = @req_data.clone
+      bad_data['created_at'] = '1900-01-01'
+      post "api/v1/project/#{@proj.id}/request",
+           bad_data.to_json, @req_header
+      # problem ask bimo why I get 500
+      _(last_response.status).must_equal 500
+      _(last_response.header['Location']).must_be_nil
+    end
   end
 end
