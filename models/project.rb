@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 require 'json'
@@ -11,6 +10,7 @@ module Dada
     plugin :association_dependencies, requests: :destroy
 
     plugin :timestamps
+    plugin :whitelist_security
 
     # rubocop:disable MethodLength
     def to_json(options = {})

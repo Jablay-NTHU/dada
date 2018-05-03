@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require 'json'
 require 'roda'
+require 'json'
 
-require_relative 'config/environments'
-require_relative 'models/init'
+# require_relative 'lib/init'
+# require_relative 'config/environments'
+# require_relative 'models/init'
 
 module Dada
   # Web controller for Dada API
@@ -20,18 +21,19 @@ module Dada
 
       routing.on 'api' do
         routing.on 'v1' do
-          @api_root = 'api/v1'
+          @api_root = "api/v1"
 
           routing.on 'projects' do
-            @projects_route = "#{@api_root}/projects"
-
+            @proj_route = "#{@api_root}/projects"
+            
             # GET api/v1/projects
             routing.get do
-              output = { data: Project.all }
-              JSON.pretty_generate(output)
-            rescue StandardError
-              routing.halt 404, { message: 'Could not find projects' }.to_json
-            end
+                output = { data: Project.all }
+                JSON.pretty_generate(output)
+              rescue StandardError
+                routing.halt 404, { message: 'Could not find projects' }.to_json
+              end
+
           end
 
           routing.on 'project' do
