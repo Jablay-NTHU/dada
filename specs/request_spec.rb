@@ -47,7 +47,6 @@ describe 'Test Request Handling' do
   end
 
   describe 'Creating New Requests' do
-
     before do
       @req_header = { 'CONTENT_TYPE' => 'application/json' }
       @proj = Dada::Project.first
@@ -55,7 +54,6 @@ describe 'Test Request Handling' do
     end
 
     it 'HAPPY: should be able to create new request' do
-
       post "api/v1/project/#{@proj.id}/request",
            @req_data.to_json, @req_header
       _(last_response.status).must_equal 201
