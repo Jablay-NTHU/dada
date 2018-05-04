@@ -6,6 +6,7 @@ Sequel.migration do
   change do
     create_table(:projects) do
       primary_key :id
+      foreign_key :owner_id, :accounts
 
       String :title, null: false
       String :description, null: true
