@@ -16,6 +16,7 @@ gem 'rbnacl-libsodium'
 
 # Database
 gem 'sequel'
+gem 'sequel-seed'
 gem 'hirb'
 group :development, :test do
   gem 'sqlite3'
