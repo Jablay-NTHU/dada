@@ -1,2 +1,3 @@
 db/*.*
 config/secrets.yml
+.bundle/

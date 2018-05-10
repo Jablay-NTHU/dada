@@ -36,3 +36,8 @@ end
 group :development, :test do
   gem 'rerun'
 end
+
+# production
+group :production do
+  gem 'pg'
+end
