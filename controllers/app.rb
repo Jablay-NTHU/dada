@@ -25,6 +25,31 @@ module Dada
 
           routing.on 'accounts' do
             @account_route = "#{@api_root}/accounts"
+             
+            # always remenber "XXX" have to be in fornt of String do ||  
+            routing.on 'owner_ids' do
+              @account_owner_ids_route = "#{@account_route}/owner_ids"
+              routing.on String do |owner_id|
+                routing.on 'project' do
+                  # POST api/v1/accounts/owner_ids/[OWNER_ID]/project
+                  routing.post do
+                    new_data = JSON.parse(routing.body.read)
+                    new_project = CreateProjectForOwner.call(
+                        owner_id:owner_id, project_data: new_data
+                      )
+                    raise('Could not save project') unless new_project.save
+
+                    response.status = 201
+                    response['Location'] = "#{@account_owner_ids_route}/#{new_project.id}"
+                    { message: 'Project saved', data: new_project }.to_json
+                    rescue Sequel::MassAssignmentRestriction
+                      routing.halt 400, { message: 'Illegal Request' }.to_json
+                    rescue StandardError
+                      routing.halt 500, { message: 'Database error' }.to_json
+                  end
+                end
+              end
+            end
 
             routing.on String do |username|
               # GET api/v1/accounts/[USERNAME]
