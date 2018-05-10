@@ -23,6 +23,36 @@ module Dada
         routing.on 'v1' do
           @api_root = "api/v1"
 
+          routing.on 'accounts' do
+            @account_route = "#{@api_root}/accounts"
+
+            routing.on String do |username|
+              # GET api/v1/accounts/[USERNAME]
+              routing.get do
+                account = Account.first(username: username)
+                account ? account.to_json : raise('Account not found')
+              rescue StandardError => error
+                routing.halt 404, { message: error.message }.to_json
+              end
+            end
+
+            # POST api/v1/accounts
+            routing.post do
+              new_data = JSON.parse(routing.body.read)
+              new_account = Account.new(new_data)
+              raise('Could not save account') unless new_account.save
+
+              response.status = 201
+              response['Location'] = "#{@account_route}/#{new_account.id}"
+              { message: 'Project saved', data: new_account }.to_json
+            rescue Sequel::MassAssignmentRestriction
+              routing.halt 400, { message: 'Illegal Request' }.to_json
+            rescue StandardError => error
+              puts error.inspect
+              routing.halt 500, { message: error.message }.to_json
+            end
+          end
+
           routing.on 'projects' do
             @proj_route = "#{@api_root}/projects"
             # GET api/v1/projects

@@ -6,6 +6,13 @@ require 'sequel'
 module Dada
   # Models a project
   class Project < Sequel::Model
+    many_to_one :owner, class: :'Dada::Account'
+
+    many_to_many :collaborators,
+                 class: :'Dada::Account',
+                 join_table: :accounts_projects,
+                 left_key: :project_id, right_key: :collaborator_id
+
     one_to_many :requests
     plugin :association_dependencies, requests: :destroy
 

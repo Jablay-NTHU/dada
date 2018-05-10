@@ -11,7 +11,6 @@ describe 'Test Response Handling' do
     DATA[:requests].each do |request_data|
       Dada::Request.create(request_data)
     end
-
   end
 
   it 'HAPPY: should be able to get list of all requests' do
@@ -73,7 +72,6 @@ describe 'Test Response Handling' do
       bad_data['created_at'] = '1900-01-01'
       post "api/v1/request/#{@req.id}/response",
            bad_data.to_json, @res_header
-           
       _(last_response.status).must_equal 400
       _(last_response.header['Location']).must_be_nil
     end
