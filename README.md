@@ -12,7 +12,7 @@ All routes return Json
 - GET `api/v1/projects/[ID_Pro]/request/[ID_Req]`: returns details about a single request with given ID Project
 - GET `api/v1/projects/[ID_Pro]/request/[ID_Req]/responses/[ID_Res]`: returns details about a single responses with given ID
 
-- POST `api/v1/projects/[]`: creates a new project
+- POST `api/v1/accounts/owner_ids/[OWNER_ID]/project`: creates a new project for a user
 - POST `api/v1/projects/[IDP]/request/[]`: creates a new request for API Call with given ID project
 
 ## Install
