@@ -9,7 +9,8 @@ module Dada
     one_to_many :owned_projects, class: :'Dada::Project', key: :owner_id
     plugin :association_dependencies, owned_projects: :destroy
 
-    many_to_many :projects,
+    # to differentiate owned and collaborated project of an account
+    many_to_many :collaborated_projects,
                  join_table: :accounts_projects,
                  left_key: :collaborator_id, right_key: :project_id
 
