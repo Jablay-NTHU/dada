@@ -100,6 +100,7 @@ namespace :db do
   task reset: [:drop, :migrate]
 
   task :reset_seeds => [:setup, :load_models] do
+    puts :schema_seeds
     app.DB[:schema_seeds].delete if app.DB.tables.include?(:schema_seeds)
     Dada::Account.dataset.destroy
   end
