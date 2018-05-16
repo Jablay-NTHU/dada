@@ -101,7 +101,7 @@ namespace :db do
 
   task :reset_seeds => [:setup, :load_models] do
     app.DB[:schema_seeds].delete if app.DB.tables.include?(:schema_seeds)
-    Credence::Account.dataset.destroy
+    Dada::Account.dataset.destroy
   end
 
   desc 'Seeds the development database'
