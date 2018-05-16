@@ -1,0 +1,16 @@
+---
+- username: 'victorlin12345'
+  email: 'victorlin12345@gmail.com'
+  password: 'idontcareaboutanypass'
+  proj_title: 
+    - 'Facebook API'
+- username: 'z.triwijaya'
+  email: 'ztriwijaya@nthu.edu.tw'
+  password: 'ithisapassword'
+  proj_title: 
+    - 'Twitter API'
+- username: 'agoeng.bhimasta'
+  email: 'abhimasta@nthu.edu.tw'
+  password: 'dontknowifthisapassword'
+  proj_title: 
+    - 'MOTC API'

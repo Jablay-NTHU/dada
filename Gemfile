@@ -17,8 +17,15 @@ gem 'rbnacl-libsodium'
 # Database
 gem 'sequel'
 gem 'hirb'
+
 group :development, :test do
+  gem 'sequel-seed'
   gem 'sqlite3'
+end
+
+# production
+group :production do
+  gem 'pg'
 end
 
 # Testing
@@ -35,9 +42,4 @@ end
 
 group :development, :test do
   gem 'rerun'
-end
-
-# production
-group :production do
-  gem 'pg'
 end

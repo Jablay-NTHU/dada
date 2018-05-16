@@ -1,8 +1,8 @@
 ---
   - project_title: 'Facebook API'
-    collaborator_email:
+    collaborators_email:
       - 'abhimasta@nthu.edu.tw'
       - 'ztriwijaya@nthu.edu.tw'
   - project_title: 'Twitter API'
-    collaborator_email:
+    collaborators_email:
       - 'victorlin12345@gmail.com'
