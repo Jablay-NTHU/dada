@@ -13,37 +13,42 @@ describe 'Test Request Handling' do
     end
   end
 
-  it 'HAPPY: should be able to get list of all requests' do
-    proj = Dada::Project.first
-    DATA[:requests].each do |req|
-      proj.add_request(req)
+  describe 'Getting Request' do
+    before do
+      @proj = Dada::Project.first
+      DATA[:requests].each do |req_data|
+        Dada::CreateRequestForProject.call(
+          project_id: @proj.id,
+          request_data: req_data
+        )
+      end
     end
 
-    get "api/v1/project/#{proj.id}/requests"
-    _(last_response.status).must_equal 200
+    it 'HAPPY: should be able to get list of all requests' do
+      get "api/v1/project/#{@proj.id}/requests"
+      _(last_response.status).must_equal 200
 
-    result = JSON.parse last_response.body
-    _(result['data'].count).must_equal 2
-  end
+      result = JSON.parse last_response.body
+      _(result.count).must_equal DATA[:requests].count
+    end
 
-  it 'HAPPY: should be able to get details of a single request' do
-    req_data = DATA[:requests][1]
-    proj = Dada::Project.first
-    req = proj.add_request(req_data).save
+    it 'HAPPY: should be able to get details of a single request' do
+      req = Dada::Request.first
 
-    get "/api/v1/project/#{proj.id}/request/#{req.id}"
-    _(last_response.status).must_equal 200
+      get "/api/v1/project/#{@proj.id}/request/#{req.id}"
+      _(last_response.status).must_equal 200
 
-    result = JSON.parse last_response.body
-    _(result['data']['attributes']['id']).must_equal req.id
-    _(result['data']['attributes']['api_url']).must_equal req_data['api_url']
-  end
+      result = JSON.parse last_response.body
+      _(result['data']['attributes']['id']).must_equal req.id
+      _(result['data']['attributes']['api_url']).must_equal req.api_url
+    end
 
-  it 'SAD: should return error if unknown document requested' do
-    req = Dada::Project.first
-    get "/api/v1/project/#{req.id}/request/foobar"
+    it 'SAD: should return error if unknown document requested' do
+      proj = Dada::Project.first
 
-    _(last_response.status).must_equal 404
+      get "/api/v1/project/#{proj.id}/request/foobar"
+      _(last_response.status).must_equal 404
+    end
   end
 
   describe 'Creating New Requests' do

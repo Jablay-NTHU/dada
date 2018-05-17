@@ -13,37 +13,42 @@ describe 'Test Response Handling' do
     end
   end
 
-  it 'HAPPY: should be able to get list of all requests' do
-    req = Dada::Request.first
-    DATA[:responses].each do |res|
-      req.add_response(res)
+  describe 'Getting Response' do
+    before do
+      @req = Dada::Request.first
+      DATA[:responses].each do |res_data|
+        Dada::CreateResponseForRequest.call(
+          request_id: @req.id,
+          response_data: res_data
+        )
+      end
     end
 
-    get "api/v1/request/#{req.id}/responses"
-    _(last_response.status).must_equal 200
+    it 'HAPPY: should be able to get list of all requests' do
+      get "api/v1/request/#{@req.id}/responses"
+      _(last_response.status).must_equal 200
 
-    result = JSON.parse last_response.body
-    _(result['data'].count).must_equal 2
-  end
+      result = JSON.parse last_response.body
+      _(result.count).must_equal DATA[:responses].count
+    end
 
-  it 'HAPPY: should be able to get details of a single request' do
-    req = Dada::Request.first
-    res_data = DATA[:responses][1]
-    res = req.add_response(res_data).save
+    it 'HAPPY: should be able to get details of a single request' do
+      res = Dada::Response.first
 
-    get "/api/v1/request/#{req.id}/response/#{res.id}"
-    _(last_response.status).must_equal 200
+      get "/api/v1/request/#{@req.id}/response/#{res.id}"
+      _(last_response.status).must_equal 200
 
-    result = JSON.parse last_response.body
-    _(result['data']['attributes']['id']).must_equal res.id
-    _(result['data']['attributes']['body']).must_equal res_data['body']
-  end
+      result = JSON.parse last_response.body
+      _(result['data']['attributes']['id']).must_equal res.id
+      _(result['data']['attributes']['body']).must_equal res.body
+    end
 
-  it 'SAD: should return error if unknown document requested' do
-    req = Dada::Request.first
-    get "/api/v1/request/#{req.id}/response/foobar"
+    it 'SAD: should return error if unknown document requested' do
+      req = Dada::Request.first
+      get "/api/v1/request/#{req.id}/response/foobar"
 
-    _(last_response.status).must_equal 404
+      _(last_response.status).must_equal 404
+    end
   end
 
   describe 'Creating New Response' do
