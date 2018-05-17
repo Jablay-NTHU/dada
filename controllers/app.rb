@@ -22,11 +22,9 @@ module Dada
       routing.on 'api' do
         routing.on 'v1' do
           @api_root = "api/v1"
-
           routing.on 'accounts' do
             @account_route = "#{@api_root}/accounts"
-             
-            # always remenber "XXX" have to be in fornt of String do ||  
+            # always remenber "XXX" have to be in front of String do ||
             routing.on 'owner_ids' do
               @account_owner_ids_route = "#{@account_route}/owner_ids"
               routing.on String do |owner_id|
@@ -35,17 +33,17 @@ module Dada
                   routing.post do
                     new_data = JSON.parse(routing.body.read)
                     new_project = CreateProjectForOwner.call(
-                        owner_id:owner_id, project_data: new_data
-                      )
+                      owner_id: owner_id, project_data: new_data
+                    )
                     raise('Could not save project') unless new_project.save
 
                     response.status = 201
                     response['Location'] = "#{@account_owner_ids_route}/#{new_project.id}"
                     { message: 'Project saved', data: new_project }.to_json
-                    rescue Sequel::MassAssignmentRestriction
-                      routing.halt 400, { message: 'Illegal Request' }.to_json
-                    rescue StandardError
-                      routing.halt 500, { message: 'Database error' }.to_json
+                  rescue Sequel::MassAssignmentRestriction
+                    routing.halt 400, { message: 'Illegal Request' }.to_json
+                  rescue StandardError
+                    routing.halt 500, { message: 'Database error' }.to_json
                   end
                 end
               end
@@ -94,10 +92,10 @@ module Dada
               routing.on 'requests' do
                 # GET api/v1/project/[proj_id]/requests
                 routing.get do
-                  output = { data: Project.first(id: proj_id).requests }
+                  output = Project.first(id: proj_id).requests
                   JSON.pretty_generate(output)
                 rescue StandardError
-                  routing.halt 404, { message: 'Could not find requests' }.to_json
+                  routing.halt 404, { message: 'Could not find requests' }
                 end
               end
 
@@ -116,9 +114,10 @@ module Dada
                 # POST api/v1/project/[proj_id]/request
                 routing.post do
                   new_data = JSON.parse(routing.body.read)
-                  proj = Project.first(id: proj_id)
-                  new_req = proj.add_request(new_data)
-                  raise('Could not save request') unless new_req.save
+
+                  new_req = CreateRequestForProject.call(
+                    project_id: proj_id, request_data: new_data
+                  )
 
                   response.status = 201
                   response['Location'] = "#{@req_route}/#{new_req.id}"
@@ -181,9 +180,10 @@ module Dada
                 # POST api/v1/request/[req_id]/response
                 routing.post do
                   new_data = JSON.parse(routing.body.read)
-                  req = Request.first(id: req_id)
-                  new_res = req.add_response(new_data)
-                  raise('Could not save Response') unless new_res.save
+
+                  new_res = CreateResponseForRequest.call(
+                    request_id: req_id, response_data: new_data
+                  )
 
                   response.status = 201
                   response['Location'] = "#{@res_route}/#{new_res.id}"

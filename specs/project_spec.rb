@@ -41,7 +41,6 @@ describe 'Test Project Handling' do
   end
 
   describe 'Creating New Projects' do
-
     before do
       @req_header = { 'CONTENT_TYPE' => 'application/json' }
       @proj_data = DATA[:projects][1]
@@ -69,5 +68,4 @@ describe 'Test Project Handling' do
       _(last_response.header['Location']).must_be_nil
     end
   end
-
 end
