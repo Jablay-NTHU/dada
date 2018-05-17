@@ -1,5 +1,11 @@
 ---
 development:
   DB_FILENAME: db/dev.db
+  SECURE_SCHEME: HTTP
+
 test:
   DB_FILENAME: db/test.db
+  SECURE_SCHEME: HTTP
+
+production:
+  SECURE_SCHEME: HTTPS
