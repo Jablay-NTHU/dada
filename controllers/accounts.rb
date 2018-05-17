@@ -9,7 +9,15 @@ module Dada
       @account_route = "#{@api_root}/accounts"
 
       routing.on 'authenticate' do
-        routing.route('authenticate', 'accounts')
+        routing.post do
+          credentials = JsonRequestBody.parse_symbolize(request.body.read)
+          auth_account = AuthenticateAccount.call(credentials)
+          auth_account.to_json
+        rescue UnauthorizedError => error
+          puts [error.class, error.message].join ': '
+          routing.halt '403', { message: 'Invalid credentials' }.to_json
+        end
+        # routing.route('authenticate', 'accounts')
       end
 
       routing.on 'owner_ids' do
