@@ -1,3 +1,4 @@
 db/*.*
 config/secrets.yml
 .bundle/
+.DS_Store
