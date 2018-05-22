@@ -7,7 +7,6 @@ module Dada
   class Api < Roda
     route('project') do |routing|
       routing.on String do |proj_id|
-        
         routing.on 'requests' do
           # GET api/v1/project/[proj_id]/requests
           routing.get do

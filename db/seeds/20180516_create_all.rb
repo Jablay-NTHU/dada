@@ -2,11 +2,12 @@
 
 Sequel.seed(:development) do
   def run
-    puts 'Seeding accounts, projects, requests, responses'
+    puts 'Seeding accounts, projects, requests, responses, token'
     create_accounts
     create_owned_projects
     create_requests
     create_responses
+    create_tokens
     add_collaborators
   end
 end
@@ -19,6 +20,7 @@ PROJS_INFO = YAML.load_file("#{DIR}/projects_seed.yml")
 COLLS_INFO = YAML.load_file("#{DIR}/collaborators_seed.yml")
 REQUEST_INFO = YAML.load_file("#{DIR}/requests_seed.yml")
 RESPONSE_INFO = YAML.load_file("#{DIR}/responses_seed.yml")
+TOKEN_INFO = YAML.load_file("#{DIR}/tokens_seed.yml")
 
 def create_accounts
   ACCOUNTS_INFO.each do |account_info|
@@ -61,6 +63,19 @@ def create_responses
     )
   end
 end
+
+def create_tokens
+  tok_info_each = TOKEN_INFO.each
+  account_cycle = Dada::Account.all.cycle
+  loop do
+    tok_info = tok_info_each.next
+    account = account_cycle.next
+    Dada::CreateTokenForUser.call(
+      owner_id: account.id, token_data: tok_info
+    )
+  end
+end
+
 
 def add_collaborators
   collaborators_info = COLLS_INFO

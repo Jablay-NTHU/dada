@@ -9,6 +9,9 @@ module Dada
     one_to_many :owned_projects, class: :'Dada::Project', key: :owner_id
     plugin :association_dependencies, owned_projects: :destroy
 
+    one_to_many :owned_tokens, class: :'Dada::Token', key: :owner_id
+    plugin :association_dependencies, owned_tokens: :destroy
+
     many_to_many :projects,
                  join_table: :accounts_projects,
                  left_key: :collaborator_id, right_key: :project_id
