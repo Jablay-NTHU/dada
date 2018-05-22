@@ -10,7 +10,6 @@ Sequel.migration do
 
       String :title, null: false
       String :description, null: true
-      String :secret_token_secure, null: false
       String :public_url_secure, null: true, unique: true
 
       DateTime :created_at

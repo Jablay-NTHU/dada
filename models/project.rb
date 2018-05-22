@@ -19,16 +19,8 @@ module Dada
     plugin :timestamps
     plugin :whitelist_security
 
-    set_allowed_columns :title, :description, :secret_token, :public_url, :owner_id
+    set_allowed_columns :title, :description, :public_url, :owner_id
 
-    def secret_token
-      SecureDB.decrypt(self.secret_token_secure)
-    end
-
-    def secret_token=(plaintext)
-      self.secret_token_secure = SecureDB.encrypt(plaintext)
-    end
-    
     def public_url
       SecureDB.decrypt(self.public_url_secure)
     end
@@ -47,7 +39,6 @@ module Dada
               id: id,
               title: title,
               description: description,
-              secret_token: secret_token,
               public_url: public_url
             }
           }

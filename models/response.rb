@@ -4,7 +4,7 @@ require 'json'
 require 'sequel'
 
 module Dada
-  # Models a secret document
+  # Models a secret response
   class Response < Sequel::Model
     many_to_one :request
 
