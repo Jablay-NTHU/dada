@@ -4,14 +4,13 @@ require 'sequel'
 
 Sequel.migration do
   change do
-    create_table(:projects) do
+    create_table(:tokens) do
       primary_key :id
       foreign_key :owner_id, :accounts
 
-      String :title, null: false
-      String :description, null: true
-      String :public_url_secure, null: true, unique: true
-
+      String :name, null: false
+      String :value_secure, null: false
+      String :description
       DateTime :created_at
       DateTime :updated_at
     end

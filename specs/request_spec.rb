@@ -69,7 +69,7 @@ describe 'Test Request Handling' do
 
       _(created['id']).must_equal req.id
       _(created['api_url']).must_equal @req_data['api_url']
-      _(created['scheduled']).must_equal @req_data['scheduled']
+      _(created['interval']).must_equal @req_data['interval']
     end
 
     it 'BAD: should not create request with illegal attributes' do

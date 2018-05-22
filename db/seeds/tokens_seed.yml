@@ -1,0 +1,7 @@
+---
+- name: 'motc_id'
+  value: '1m4kj2n412jri01jf290-wefveoiwfekf'
+  description: 'essential parameter for using motc api'
+- name: 'motc_key'
+  value: '11029rjfi9ugwvneims;gkq3-4hq0jbioqbmesm'
+  description: 'essential key value for using motc api, use with motc_id'

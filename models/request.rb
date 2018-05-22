@@ -4,7 +4,7 @@ require 'json'
 require 'sequel'
 
 module Dada
-  # Models a secret document
+  # Models a secret request
   class Request < Sequel::Model
     many_to_one :project
 
@@ -14,7 +14,17 @@ module Dada
     plugin :timestamps
     plugin :whitelist_security
 
-    set_allowed_columns :project_id, :api_url, :scheduled, :parameters, :date_start, :date_end
+    set_allowed_columns :project_id, :title, :description, :api_url,
+                        :interval, :parameters, :date_start, :date_end,
+                        :json_path, :xml_path
+
+    def parameters
+      SecureDB.decrypt(parameters_secure)
+    end
+
+    def parameters=(plaintext)
+      self.parameters_secure = SecureDB.encrypt(plaintext)
+    end
 
     # rubocop:disable MethodLength
     def to_json(options = {})
@@ -24,11 +34,15 @@ module Dada
             type: 'request',
             attributes: {
               id: id,
+              title: title,
+              description: description,
               api_url: api_url,
-              scheduled: scheduled,
+              interval: interval,
               parameters: parameters,
               date_start: date_start,
-              date_end: date_end
+              date_end: date_end,
+              json_path: json_path,
+              xml_path: xml_path
             }
           },
           included: {
