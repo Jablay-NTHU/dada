@@ -66,10 +66,10 @@ module Dada
       rescue Sequel::MassAssignmentRestriction
         routing.halt 400, { message: 'Illegal Request' }.to_json
       rescue StandardError => error
-        puts error.inspect
+        puts "ERROR CREATING ACCOUNT: #{error.inspect}"
+        puts error.backtrace
         routing.halt 500, { message: error.message }.to_json
       end
     end
   end
 end
-

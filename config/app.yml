@@ -9,3 +9,4 @@ test:
 
 production:
   SECURE_SCHEME: HTTPS
+

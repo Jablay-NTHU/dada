@@ -17,7 +17,7 @@ end
 
 desc 'Runs rubocop on tested code'
 task style: [:spec] do
-  sh 'rubocop app.rb models/*.rb'
+  sh 'rubocop **/*.rb'
 end
 
 task :print_env do
@@ -29,42 +29,12 @@ task :console => :print_env do
   sh 'pry -r ./specs/test_load_all'
 end
 
+desc 'Run application in development mode and port'
+task :run_dev do
+  sh 'rerun -c "rackup -p 3000"'
+end
+
 namespace :db do
-  # require_relative 'lib/init' # load libraries
-  # require_relative 'config/init' # load config info
-  # require_relative 'config/environments.rb' # load config info
-  # require 'sequel'
-
-  # Sequel.extension :migration
-  # app = Dada::Api
-
-  # desc 'Run migrations'
-  # task :migrate => :print_env do
-  #   puts 'Migrating database to latest'
-  #   Sequel::Migrator.run(app.DB, 'db/migrations')
-  # end
-
-  # desc 'Delete database'
-  # task :delete do
-  #   app.DB[:responses].delete
-  #   app.DB[:requests].delete
-  #   app.DB[:projects].delete
-  # end
-
-  # desc 'Delete dev or test database file'
-  # task :drop do
-  #   if app.environment == :production
-  #     puts 'Cannot wipe production database!'
-  #     return
-  #   end
-
-  #   FileUtils.rm(app.config.DB_FILENAME)
-  #   puts "Deleted #{app.config.DB_FILENAME}"
-  # end
-
-  # desc 'Delete and migrate again'
-  # task reset: [:drop, :migrate]
-  
   require_relative 'lib/init' # load libraries
   require_relative 'config/init' # load config info
   app = Dada::Api
