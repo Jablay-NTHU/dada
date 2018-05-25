@@ -1,5 +1,8 @@
 # Dada
 
+[ ![Codeship Status for Jablay-NTHU/dada](https://app.codeship.com/projects/12bc5360-423a-0136-4f57-52cc51e21808/status?branch=master)](https://app.codeship.com/projects/291495)
+
+
 Dada is an API to call another API and store the data and retrieve it to another format (csv, etc)
 
 ## Routes
