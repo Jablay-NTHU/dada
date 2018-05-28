@@ -17,6 +17,9 @@ gem 'rack-test'
 # Security
 gem 'rbnacl-libsodium'
 
+# Services
+gem 'http'
+
 # Database
 gem 'sequel'
 gem 'hirb'
