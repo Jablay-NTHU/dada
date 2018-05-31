@@ -10,12 +10,12 @@ module Securable
   end
 
   # Call setup once to pass in config variable with DB_KEY attribute
-  def setup(config)
-    @config = config
+  def setup(base_key)
+    @base_key = base_key
   end
 
   def key
-    @key ||= Base64.strict_decode64(@config.DB_KEY)
+    @key ||= Base64.strict_decode64(@base_key)
   end
 
   # Encrypt with no checks
