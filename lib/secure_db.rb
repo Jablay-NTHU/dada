@@ -3,6 +3,8 @@
 require 'base64'
 require 'rbnacl/libsodium'
 
+require_relative 'securable.rb'
+
 # Security Primitives for Database
 class SecureDB
   extend Securable
