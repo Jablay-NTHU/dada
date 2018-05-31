@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'base64'
 require 'rbnacl/libsodium'
 
@@ -12,12 +10,12 @@ module Securable
   end
 
   # Call setup once to pass in config variable with DB_KEY attribute
-  def setup(base_key)
-    @base_key = base_key
+  def setup(config)
+    @config = config
   end
 
   def key
-    @key ||= Base64.strict_decode64(@base_key)
+    @key ||= Base64.strict_decode64(@config.DB_KEY)
   end
 
   # Encrypt with no checks
