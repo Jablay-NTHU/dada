@@ -33,7 +33,7 @@ module Dada
       end
   
       def can_add_collaborators?
-        account_is_owner?
+        account_is_owner? || account_is_collaborator?
       end
   
       def can_remove_collaborators?
