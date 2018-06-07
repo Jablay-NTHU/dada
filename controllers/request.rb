@@ -7,11 +7,21 @@ module Dada
   class Api < Roda
     route('request') do |routing|
       routing.on String do |req_id|
-        # GET api/v1/request/[req_id]/responses
+        # GET api/v1/request/[req_id]/responses (old)
+        # GET api/v1/project/[project_id]/request/[req_id]/responses (new)
         routing.on 'responses' do
           routing.get do
+            account = Account.first(username: @auth_account['username'])
+            pro = Project.where(id: project_id).first
+            policy = RequestPolicy.new(account, pro)
+            raise unless policy.can_view?
             req = Request.first(id: req_id)
             req ? req.to_json : raise('Request not found')
+
+            project.full_details
+                 .merge(policies: policy.summary)
+                 .to_json
+          
           rescue StandardError => error
             routing.halt 404, { message: error.message }.to_json
           end
