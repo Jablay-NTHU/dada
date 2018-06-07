@@ -29,20 +29,24 @@ module Dada
       self.public_url_secure = SecureDB.encrypt(plaintext)
     end
 
-    # rubocop:disable MethodLength
+    def to_h
+      {
+        type: 'project',
+        id: id,
+        name: name,
+        repo_url: repo_url
+      }
+    end
+    
     def to_json(options = {})
-      JSON(
-        {
-          data: {
-            type: 'project',
-            attributes: {
-              id: id,
-              title: title,
-              description: description,
-              public_url: public_url
-            }
-          }
-        }, options
+      JSON(to_h, options)
+    end
+
+    def full_details
+      to_h.merge(
+        owner: owner,
+        collaborators: collaborators,
+        documents: documents
       )
     end
     # rubocop:enable MethodLength
