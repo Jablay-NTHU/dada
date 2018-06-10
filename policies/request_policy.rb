@@ -19,11 +19,31 @@ class RequestPolicy
     account_owns_project? || account_collaborates_on_project?
   end
 
+  def can_view_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_add_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_remove_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_export_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
   def summary
     {
       can_view:   can_view?,
       can_edit:   can_edit?,
-      can_delete: can_delete?
+      can_delete: can_delete?,
+      can_view_response: can_view_response?,
+      can_add_response: can_add_response?,
+      can_remove_response: can_remove_response?,
+      can_export_response: can_export_response?
     }
   end
 

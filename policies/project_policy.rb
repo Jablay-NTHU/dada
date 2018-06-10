@@ -24,11 +24,15 @@ module Dada
       account_is_collaborator?
     end
 
-    def can_add_documents?
+    def can_add_requests?
       account_is_owner? || account_is_collaborator?
     end
 
-    def can_remove_documents?
+    def can_edit_requests?
+      account_is_owner? || account_is_collaborator?
+    end
+
+    def can_remove_requests?
       account_is_owner? || account_is_collaborator?
     end
 
@@ -46,8 +50,9 @@ module Dada
         can_edit: can_edit?,
         can_delete: can_delete?,
         can_leave: can_leave?,
-        can_add_documents: can_add_documents?,
-        can_delete_documents: can_remove_documents?,
+        can_add_requests: can_add_requests?,
+        can_edit_requests: can_edit_requests?,
+        can_remove_requests: can_remove_requests?,
         can_add_collaborators: can_add_collaborators?,
         can_remove_collaborators: can_remove_collaborators?
       }

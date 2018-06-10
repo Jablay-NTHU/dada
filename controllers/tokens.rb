@@ -6,11 +6,13 @@ module Dada
   # Web controller for Dada API
   class Api < Roda
     route('tokens') do |routing|
+      @tok_route = "#{@api_root}/tokens"
+
+      # GET api/v1/tokens/[tok_id]
       routing.on String do |tok_id|
-        # GET api/v1/tokens/[tok_id]
         routing.get do
-          account = Account.first(username: 'agoeng.bhimasta')
-          # account = Account.first(username: @auth_account['username'])
+          # account = Account.first(username: 'agoeng.bhimasta')
+          account = Account.first(username: @auth_account['username'])
           token = Token.first(id: tok_id)
           policy = TokenPolicy.new(account, token)
           # JSON.pretty_generate(token.full_details)

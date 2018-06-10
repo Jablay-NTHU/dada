@@ -38,7 +38,10 @@ module Dada
         date_start: date_start,
         date_end: date_end,
         json_path: json_path,
-        xml_path: xml_path
+        xml_path: xml_path,
+        created_at: created_at,
+        updated_at: updated_at,
+        project: project
       }
     end
 
@@ -48,10 +51,8 @@ module Dada
 
     def full_details
       to_h.merge(
-        project: project,
         responses: responses
       )
     end
-    # rubocop:enable MethodLength
   end
 end

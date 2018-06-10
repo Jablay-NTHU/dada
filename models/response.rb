@@ -35,19 +35,14 @@ module Dada
         id: id,
         status_code: status_code,
         header: header,
-        body: body
+        body: body,
+        created_at: created_at,
+        request: request
       }
     end
 
     def to_json(options = {})
       JSON(to_h, options)
     end
-
-    def full_details
-      to_h.merge(
-        request: request.full_details
-      )
-    end
-    # rubocop:disable MethodLength
   end
 end

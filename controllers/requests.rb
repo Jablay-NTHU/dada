@@ -7,7 +7,10 @@ module Dada
   class Api < Roda
     route('requests') do |routing|
       @req_route = "#{@api_root}/requests"
+
+      # GET api/v1/requests/[req_id]
       routing.get(String) do |req_id|
+        # account = Account.first(username: 'agoeng.bhimasta')
         account = Account.first(username: @auth_account['username'])
         request = Request.where(id: req_id).first
         policy = RequestPolicy.new(account, request)

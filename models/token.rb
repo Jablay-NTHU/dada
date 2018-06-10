@@ -40,6 +40,5 @@ module Dada
         owner: owner
       )
     end
-    # rubocop:enable MethodLength
   end
 end

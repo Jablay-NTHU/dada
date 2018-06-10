@@ -6,15 +6,16 @@ module Dada
   # Web controller for Dada API
   class Api < Roda
     route('responses') do |routing|
-      @req_route = "#{@api_root}/responses"
+      @res_route = "#{@api_root}/responses"
+
+      # GET api/v1/responses/[res_id]
       routing.get(String) do |res_id|
+        # account = Account.first(username: 'agoeng.bhimasta')
         account = Account.first(username: @auth_account['username'])
         response = Response.where(id: res_id).first
         policy = ResponsePolicy.new(account, response)
         raise unless policy.can_view?
-        response.full_details
-                .merge(policies: policy.summary)
-                .to_json
+        response ? response.to_json : raise
       rescue StandardError => error
         puts "ERROR: #{error.inspect}"
         puts error.backtrace
