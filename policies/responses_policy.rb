@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Policy to determine if account can view a project
+# Policy to determine if account can view a response
 class ResponsePolicy
   def initialize(account, response)
     @account = account
@@ -30,10 +30,10 @@ class ResponsePolicy
   private
 
   def account_owns_project?
-    @response.project.owner == @account
+    @response.request.project.owner == @account
   end
 
   def account_collaborates_on_project?
-    @response.project.collaborators.include?(@account)
+    @response.request.project.collaborators.include?(@account)
   end
 end

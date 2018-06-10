@@ -47,7 +47,7 @@ module Dada
       to_h.merge(
         owner: owner,
         collaborators: collaborators,
-        responses: responses
+        requests: requests
       )
     end
   end

@@ -15,25 +15,25 @@ module Dada
           project = Project.first(id: proj_id)
           policy  = ProjectPolicy.new(account, project)
           raise unless policy.can_view?
-
           project.full_details
                  .merge(policies: policy.summary)
                  .to_json
-        rescue StandardError
+        rescue StandardError => error
+          puts "ERROR: #{error.inspect}"
+          puts error.backtrace
           routing.halt 404, { message: 'Project not found' }.to_json
         end
       end
 
       # GET api/v1/projects
       routing.get do
-        # output = { data: Project.all }
-        # JSON.pretty_generate(output)
         account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable
-
         JSON.pretty_generate(viewable_projects)
-      rescue StandardError
+      rescue StandardError => error
+        puts "ERROR: #{error.inspect}"
+        puts error.backtrace
         routing.halt 403, { message: 'Could not find projects' }.to_json
       end
 
