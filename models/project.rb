@@ -33,11 +33,12 @@ module Dada
       {
         type: 'project',
         id: id,
-        name: name,
-        repo_url: repo_url
+        title: title,
+        description: description,
+        public_url: public_url
       }
     end
-    
+
     def to_json(options = {})
       JSON(to_h, options)
     end
@@ -46,9 +47,8 @@ module Dada
       to_h.merge(
         owner: owner,
         collaborators: collaborators,
-        documents: documents
+        responses: responses
       )
     end
-    # rubocop:enable MethodLength
   end
 end
