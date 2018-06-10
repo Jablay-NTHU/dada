@@ -6,7 +6,7 @@ require 'sequel'
 module Dada
   # Models a token
   class Token < Sequel::Model
-    many_to_one :owner_token, class: :'Dada::Account'
+    many_to_one :owner, class: :'Dada::Account'
 
     plugin :timestamps
     plugin :whitelist_security
@@ -21,20 +21,23 @@ module Dada
       self.value_secure = SecureDB.encrypt(plaintext)
     end
 
-    # rubocop:disable MethodLength
+    def to_h
+      {
+        type: 'token',
+        id: id,
+        name: name,
+        value: value,
+        description: description
+      }
+    end
+
     def to_json(options = {})
-      JSON(
-        {
-          data: {
-            type: 'token',
-            attributes: {
-              id: id,
-              name: name,
-              value: value,
-              description: description
-            }
-          }
-        }, options
+      JSON(to_h, options)
+    end
+
+    def full_details
+      to_h.merge(
+        owner: owner
       )
     end
     # rubocop:enable MethodLength
