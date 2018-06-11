@@ -32,7 +32,9 @@ module Dada
         account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable
-        JSON.pretty_generate(viewable_projects)
+        proj = Projects.new(viewable_projects, account)
+        proj.to_json
+        # JSON.pretty_generate(proj)
       rescue StandardError => error
         puts "ERROR: #{error.inspect}"
         puts error.backtrace
