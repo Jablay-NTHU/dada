@@ -6,6 +6,9 @@ require 'json'
 module Dada
   # Models a registered account
   class Account < Sequel::Model
+    plugin :single_table_inheritance, :type,
+            model_map: { 'email' => 'Dada::EmailAccount',
+                         'sso'   => 'Dada::SsoAccount' }
     one_to_many :owned_projects, class: :'Dada::Project', key: :owner_id
     plugin :association_dependencies, owned_projects: :destroy
 
@@ -22,20 +25,24 @@ module Dada
 
     plugin :timestamps, update_on_create: true
 
-    def password=(new_password)
-      self.salt = SecureDB.new_salt
-      self.password_hash = SecureDB.hash_password(salt, new_password)
-    end
+    # def password=(new_password)
+    #   self.salt = SecureDB.new_salt
+    #   self.password_hash = SecureDB.hash_password(salt, new_password)
+    # end
 
-    def password?(try_password)
-      try_hashed = SecureDB.hash_password(salt, try_password)
-      try_hashed == password_hash
+    # def password?(try_password)
+    #   try_hashed = SecureDB.hash_password(salt, try_password)
+    #   try_hashed == password_hash
+    # end
+
+    def projects
+      owned_projects + collaborations
     end
 
     def to_json(options = {})
       JSON(
         {
-          type: 'account',
+          type: 'type',
           id: id,
           username: username,
           email: email

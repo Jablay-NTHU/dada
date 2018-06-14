@@ -15,7 +15,7 @@ module Dada
     end
 
     def username_available?(registration)
-      Account.first(username: registration[:username]).nil?
+      EmailAccount.first(username: registration[:username]).nil?
     end
 
     def email_body(registration)

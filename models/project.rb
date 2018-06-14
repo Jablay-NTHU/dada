@@ -3,6 +3,8 @@
 require 'json'
 require 'sequel'
 
+
+require_relative 'account/account'
 module Dada
   # Models a project
   class Project < Sequel::Model

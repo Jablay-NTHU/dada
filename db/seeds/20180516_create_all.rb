@@ -24,7 +24,7 @@ TOKEN_INFO = YAML.load_file("#{DIR}/tokens_seed.yml")
 
 def create_accounts
   ACCOUNTS_INFO.each do |account_info|
-    Dada::Account.create(account_info)
+    Dada::EmailAccount.create(account_info)
   end
 end
 
