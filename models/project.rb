@@ -3,6 +3,8 @@
 require 'json'
 require 'sequel'
 
+
+require_relative 'account/account'
 module Dada
   # Models a project
   class Project < Sequel::Model
@@ -31,19 +33,14 @@ module Dada
 
     def to_h
       {
-        data: {
-            type: 'project',
-            attributes: {
-              id: id,
-              title: title,
-              description: description,
-              public_url: public_url
-            }
-        }
+        type: 'project',
+        id: id,
+        title: title,
+        description: description,
+        public_url: public_url
       }
     end
-    
-    # rubocop:disable MethodLength
+
     def to_json(options = {})
       JSON(to_h, options)
     end
@@ -55,6 +52,5 @@ module Dada
         requests: requests
       )
     end
-    # rubocop:enable MethodLength
   end
 end

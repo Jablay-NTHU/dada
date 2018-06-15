@@ -1,47 +1,59 @@
 # frozen_string_literal: true
 
-module Dada
-    # Policy to determine if an account make the requests
-    class RequestPolicy
-      def initialize(account, project)
-        @account = account
-        @project = project
-      end
-  
-      def can_view?
-        account_is_owner? || account_is_collaborator?
-      end
-  
-      # duplication is ok!
-      def can_edit?
-        account_is_owner? || account_is_collaborator?
-      end
-  
-      def can_add?
-        account_is_owner? || account_is_collaborator?
-      end
-  
-      def can_remove?
-        account_is_owner? || account_is_collaborator?
-      end
-  
-      def summary
-        {
-          can_view_requests: can_view?,
-          can_add_requests: can_add?,
-          can_edit_requests: can_edit?,
-          can_remove_requests: can_remove?,
-        }
-      end
-  
-      private
-  
-      def account_is_owner?
-        @project.owner == @account
-      end
-  
-      def account_is_collaborator?
-        @project.collaborators.include?(@account)
-      end
-    end
+# Policy to determine if account can view a project
+class RequestPolicy
+  def initialize(account, request)
+    @account = account
+    @request = request
   end
+
+  def can_view?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_edit?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_delete?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_view_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_add_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_remove_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def can_export_response?
+    account_owns_project? || account_collaborates_on_project?
+  end
+
+  def summary
+    {
+      can_view:   can_view?,
+      can_edit:   can_edit?,
+      can_delete: can_delete?,
+      can_view_response: can_view_response?,
+      can_add_response: can_add_response?,
+      can_remove_response: can_remove_response?,
+      can_export_response: can_export_response?
+    }
+  end
+
+  private
+
+  def account_owns_project?
+    @request.project.owner == @account
+  end
+
+  def account_collaborates_on_project?
+    @request.project.collaborators.include?(@account)
+  end
+end

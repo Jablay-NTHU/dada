@@ -29,25 +29,20 @@ module Dada
       self.body_secure = SecureDB.encrypt(plaintext)
     end
 
-    # rubocop:disable MethodLength
-    def to_json(options = {})
-      JSON(
-        {
-          data: {
-            type: 'response',
-            attributes: {
-              id: id,
-              status_code: status_code,
-              header: header,
-              body: body
-            }
-          },
-          included: {
-            request: request
-          }
-        }, options
-      )
+    def to_h
+      {
+        type: 'response',
+        id: id,
+        status_code: status_code,
+        header: header,
+        body: body,
+        created_at: created_at,
+        request: request
+      }
     end
-    # rubocop:enable MethodLength
+
+    def to_json(options = {})
+      JSON(to_h, options)
+    end
   end
 end
