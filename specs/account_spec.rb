@@ -60,7 +60,7 @@ describe 'Test Document Handling' do
   describe 'Account Authentication' do
     before do
       @account_data = DATA[:accounts][1]
-      @account = Credence::Account.create(@account_data)
+      @account = Dada::Account.create(@account_data)
     end
   
     it 'HAPPY: should authenticate valid credentials' do
