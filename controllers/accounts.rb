@@ -57,7 +57,7 @@ module Dada
       # POST api/v1/accounts
       routing.post do
         new_data = JSON.parse(routing.body.read)
-        new_account = Account.new(new_data)
+        new_account = EmailAccount.new(new_data)
         raise('Could not save account') unless new_account.save
 
         response.status = 201
