@@ -28,7 +28,7 @@ module Dada
         rescue StandardError => error
           puts "ERROR: #{error.class}: #{error.message}"
           routing.halt '403', { message: 'Invalid credentials' }.to_json
-        end        
+        end
         # routing.route('authenticate', 'auth')
       end
       routing.on 'register' do
