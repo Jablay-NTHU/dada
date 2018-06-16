@@ -6,12 +6,13 @@ module Dada
   # Web controller for Dada API
   class Api < Roda
     route('projects') do |routing|
-      @proj_route = "#{@api_root}/projects" 
+      @proj_route = "#{@api_root}/projects"
+      @account = Account.first(username: 'victorlin12345')
+      # @account = Account.first(username: @auth_account['username'])
       routing.on String do |proj_id|
         #@account = Account.first(username: 'victorlin12345')
-        @account = Account.first(username: @auth_account['username'])
         project = Project.first(id: proj_id)
-        @policy  = ProjectPolicy.new(account, project)
+        @policy  = ProjectPolicy.new(@account, project)
         routing.on 'request' do
           routing.on String do |req_id|
             # POST /projects/[proj_id]/request/[req_id]/edit
@@ -117,7 +118,7 @@ module Dada
         routing.get do
           raise unless @policy.can_view?
           project.full_details
-                 .merge(policies: policy.summary)
+                 .merge(policies: @policy.summary)
                  .to_json
         rescue StandardError => error
           puts "ERROR: #{error.inspect}"
@@ -141,6 +142,9 @@ module Dada
 
       # POST api/v1/projects
       routing.post do
+        proj_data = JSON.parse(routing.body.read)
+        #@account = Account.first(username: 'victorlin12345')
+        project = Project.first(id: proj_id)        
         new_proj = Dada::CreateProjectForOwner.call(
           owner_id: @account.id, project_data: proj_data
         )
