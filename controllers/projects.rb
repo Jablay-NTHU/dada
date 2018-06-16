@@ -9,7 +9,6 @@ module Dada
       @proj_route = "#{@api_root}/projects"
 
       routing.on String do |proj_id|
-        
         # POST api/v1/projects/[proj_id]/delete
         routing.on 'delete' do
           routing.post do
@@ -18,7 +17,7 @@ module Dada
             policy = ProjectPolicy.new(account, project)
             raise unless policy.can_delete?
 
-            Project.where(id: proj_id).delete
+            Project.where(id: proj_id).destroy
 
             response.status = 201
             { message: 'Project deleted' }.to_json

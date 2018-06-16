@@ -7,18 +7,19 @@ module Dada
   class Api < Roda
     route('requests') do |routing|
       @req_route = "#{@api_root}/requests"
-      @account = Account.first(username: @auth_account['username'])
 
       # GET api/v1/requests/[req_id]
-      routing.get(String) do |req_id|
-        project = Project.first(id: proj_id)
-        @policy = ProjectPolicy.new(@account, project)
+      routing.on String do |req_id|
 
         # POST /requests/[req_id]/edit
         routing.on 'edit' do
           routing.post do
             edit_data = JSON.parse(routing.body.read)
-            raise unless @policy.can_edit_requests?
+
+            account = Account.first(username: @auth_account['username'])
+            request = Request.first(id: req_id)
+            policy = RequestPolicy.new(account, request)
+            raise unless policy.can_edit_requests?
             Dada::EditRequest.call(
               request_id: req_id, edit_data: edit_data
             )
@@ -34,8 +35,11 @@ module Dada
         # POST /requests/[req_id]/delete
         routing.on 'delete' do
           routing.post do
-            raise unless @policy.can_remove_requests?
-            Request.where(id: req_id).delete
+            account = Account.first(username: @auth_account['username'])
+            request = Request.first(id: req_id)
+            policy = RequestPolicy.new(account, request)
+            raise unless policy.can_delete?
+            Request.where(id: req_id).destroy
             response.status = 201
             { message: 'Request deleted' }.to_json
           rescue StandardError => error
@@ -45,7 +49,7 @@ module Dada
           end
         end
 
-        # GET api/v1/requests/[req_id]
+        # GET /requests/[req_id]
         routing.get do
           account = Account.first(username: @auth_account['username'])
           request = Request.where(id: req_id).first
