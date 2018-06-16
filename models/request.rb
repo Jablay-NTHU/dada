@@ -26,31 +26,33 @@ module Dada
       self.parameters_secure = SecureDB.encrypt(plaintext)
     end
 
-    # rubocop:disable MethodLength
+    def to_h
+      {
+        type: 'request',
+        id: id,
+        title: title,
+        description: description,
+        api_url: api_url,
+        interval: interval,
+        parameters: parameters,
+        date_start: date_start,
+        date_end: date_end,
+        json_path: json_path,
+        xml_path: xml_path,
+        created_at: created_at,
+        updated_at: updated_at,
+        project: project
+      }
+    end
+
     def to_json(options = {})
-      JSON(
-        {
-          data: {
-            type: 'request',
-            attributes: {
-              id: id,
-              title: title,
-              description: description,
-              api_url: api_url,
-              interval: interval,
-              parameters: parameters,
-              date_start: date_start,
-              date_end: date_end,
-              json_path: json_path,
-              xml_path: xml_path
-            }
-          },
-          included: {
-            project: project
-          }
-        }, options
+      JSON(to_h, options)
+    end
+
+    def full_details
+      to_h.merge(
+        responses: responses
       )
     end
-    # rubocop:enable MethodLength
   end
 end

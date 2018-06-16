@@ -3,6 +3,8 @@
 require 'json'
 require 'sequel'
 
+
+require_relative 'account/account'
 module Dada
   # Models a project
   class Project < Sequel::Model
@@ -29,22 +31,26 @@ module Dada
       self.public_url_secure = SecureDB.encrypt(plaintext)
     end
 
-    # rubocop:disable MethodLength
+    def to_h
+      {
+        type: 'project',
+        id: id,
+        title: title,
+        description: description,
+        public_url: public_url
+      }
+    end
+
     def to_json(options = {})
-      JSON(
-        {
-          data: {
-            type: 'project',
-            attributes: {
-              id: id,
-              title: title,
-              description: description,
-              public_url: public_url
-            }
-          }
-        }, options
+      JSON(to_h, options)
+    end
+
+    def full_details
+      to_h.merge(
+        owner: owner,
+        collaborators: collaborators,
+        requests: requests
       )
     end
-    # rubocop:enable MethodLength
   end
 end
