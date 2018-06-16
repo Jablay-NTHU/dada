@@ -12,8 +12,8 @@ module Dada
           # POST /projects/[proj_id]/request
           routing.post do
             req_data = JSON.parse(routing.body.read)
-            account = Account.first(username: 'victorlin12345')
-            # #account = Account.first(username: @auth_account['username'])
+            #account = Account.first(username: 'victorlin12345')
+            account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
             policy  = ProjectPolicy.new(account, project)
             raise unless policy.can_add_requests?
