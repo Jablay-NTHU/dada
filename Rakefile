@@ -93,6 +93,11 @@ namespace :db do
 end
 
 namespace :generate do
+  task :load_secure_lib do
+    require_relative 'models/init'
+    require_relative 'services/init'
+  end
+
   desc 'Create sample cryptographic key for database'
   task :db_key do
     require './lib/secure_db'
@@ -103,5 +108,14 @@ namespace :generate do
   task :msg_key do
     require './lib/auth_token'
     puts "MSG_KEY: #{SecureDB.generate_key}"
+  end
+
+  desc 'Create sample private/public keypair for signed communication'
+  task :signing_keypair do
+    require './lib/signed_request'
+    keypair = SignedRequest.generate_keypair
+
+    puts "SIGNING_KEY: #{keypair[:signing_key]}"
+    puts " VERIFY_KEY: #{keypair[:verify_key]}"
   end
 end

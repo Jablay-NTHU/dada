@@ -8,8 +8,8 @@ module Dada
     route('auth') do |routing|
       routing.on 'authenticate' do
         routing.post 'sso_account' do
-          auth_request = JsonRequestBody.parse_symbolize(request.body.read)
-
+          auth_request = SignedRequest.new(Api.config)
+                                      .parse(request.body.read)
           sso_account, auth_token =
             AuthenticateSsoAccount.new(Api.config)
                                   .call(auth_request[:access_token])
@@ -22,7 +22,8 @@ module Dada
 
         # POST /api/v1/auth/authenticate/email_account
         routing.post 'email_account' do
-          credentials = JsonRequestBody.parse_symbolize(request.body.read)
+          credentials = SignedRequest.new(Api.config)
+                                     .parse(request.body.read)          
           auth_account = AuthenticateEmailAccount.call(credentials)
           auth_account.to_json
         rescue StandardError => error
@@ -34,8 +35,9 @@ module Dada
       routing.on 'register' do
         # POST api/v1/auth/register
         routing.post do
-          reg_data = JSON.parse(routing.body.read)
-          EmailVerification.new(Api.config).call(reg_data)
+          registration = SignedRequest.new(Api.config)
+                                      .parse(request.body.read)
+          EmailVerification.new(Api.config).call(registration)
 
           response.status = 201
           { message: 'Verification email sent' }.to_json
