@@ -63,6 +63,40 @@ module Dada
           end
         end
 
+        # POST api/v1/projects/[proj_id]/request
+        routing.on 'request' do
+          routing.post do
+            data = JSON.parse(routing.body.read)
+            req_data = {}
+            req_data['title'] = data['title']
+            req_data['description'] = data['description']
+            req_data['api_url'] = data['api_url']
+            req_data['parameters'] = data['parameters']
+            req_data['interval'] = data['interval']
+            res_data = {}
+            res_data['status_code'] = data['status_code']
+            res_data['header'] = data['header']
+            res_data['body'] = data['body']
+
+            new_request = Dada::CreateRequestForProject.call(
+              project_id: proj_id, request_data: req_data
+            )
+            Dada::CreateResponseForRequest.call(
+              request_id: new_request.id, response_data: res_data
+            )
+            # account = Account.first(username: @auth_account['username'])
+            # project = Project.first(id: proj_id)
+            # policy  = ProjectPolicy.new(account, project)
+            # raise unless policy.can_edit?
+            response.status = 201
+            { message: 'Request saved' }.to_json
+          rescue StandardError => error
+            puts "ERROR: #{error.inspect}"
+            puts error.backtrace
+            routing.halt 404, { message: 'Request not found' }.to_json
+          end
+        end
+
         routing.get do
           # account = Account.first(username: 'agoeng.bhimasta')
           account = Account.first(username: @auth_account['username'])
