@@ -6,13 +6,31 @@ module Dada
   # Web controller for Dada API
   class Api < Roda
     route('projects') do |routing|
-      @proj_route = "#{@api_root}/projects"
-
-      # GET api/v1/projects/[proj_id]
+      @proj_route = "#{@api_root}/projects" 
       routing.on String do |proj_id|
+        routing.on 'request' do
+          # POST /projects/[proj_id]/request
+          routing.post do
+            req_data = JSON.parse(routing.body.read)
+            account = Account.first(username: 'victorlin12345')
+            # #account = Account.first(username: @auth_account['username'])
+            project = Project.first(id: proj_id)
+            policy  = ProjectPolicy.new(account, project)
+            raise unless policy.can_add_requests?
+            new_req = Dada::CreateRequestForProject.call(project_id: proj_id, request_data: req_data)
+            response.status = 201
+            { message: 'Request Saved' , data: new_req }.to_json
+          rescue Sequel::MassAssignmentRestriction
+            routing.halt 400, { message: 'Illegal Request' }.to_json
+          rescue StandardError => error
+            puts "ERROR: #{error.inspect}"
+            puts error.backtrace
+            routing.halt 500, { message: error.message }.to_json
+          end
+        end
 
-        # POST api/v1/projects/[proj_id]/delete
         routing.on 'delete' do
+          # POST api/v1/projects/[proj_id]/delete
           routing.post do
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
@@ -28,8 +46,8 @@ module Dada
           end
         end
 
-        # POST api/v1/projects/[proj_id]/leave
         routing.on 'leave' do
+          # POST api/v1/projects/[proj_id]/leave
           routing.post do
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
@@ -45,8 +63,8 @@ module Dada
           end
         end
 
-        # POST api/v1/projects/[proj_id]/edit
         routing.on 'edit' do
+          # POST api/v1/projects/[proj_id]/edit
           routing.post do
             proj_data = JSON.parse(routing.body.read)
             account = Account.first(username: @auth_account['username'])
@@ -62,9 +80,8 @@ module Dada
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
-
+        # GET api/v1/projects/[proj_id]
         routing.get do
-          # account = Account.first(username: 'agoeng.bhimasta')
           account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
           policy  = ProjectPolicy.new(account, project)
