@@ -32,6 +32,11 @@ module Dada
       self.password_hash = SecureDB.hash_password(salt, new_password)
     end
 
+    def password_check(salt, try_password)
+      try_hashed = SecureDB.hash_password(salt, try_password)
+      return try_hashed == password_hash
+    end
+
     def projects
       owned_projects + collaborations
     end
