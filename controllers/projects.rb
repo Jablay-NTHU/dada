@@ -8,17 +8,17 @@ module Dada
     route('projects') do |routing|
       @proj_route = "#{@api_root}/projects"
 
-      # GET api/v1/projects/[proj_id]
       routing.on String do |proj_id|
-
         # POST api/v1/projects/[proj_id]/delete
         routing.on 'delete' do
           routing.post do
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
-            policy  = ProjectPolicy.new(account, project)
+            policy = ProjectPolicy.new(account, project)
             raise unless policy.can_delete?
-            Project.where(id: proj_id).delete
+
+            Project.where(id: proj_id).destroy
+
             response.status = 201
             { message: 'Project deleted' }.to_json
           rescue StandardError => error
@@ -33,9 +33,11 @@ module Dada
           routing.post do
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
-            policy  = ProjectPolicy.new(account, project)
+            policy = ProjectPolicy.new(account, project)
             raise unless policy.can_leave?
+
             project.remove_collaborator(account)
+
             response.status = 201
             { message: 'Project leaved' }.to_json
           rescue StandardError => error
@@ -48,12 +50,14 @@ module Dada
         # POST api/v1/projects/[proj_id]/edit
         routing.on 'edit' do
           routing.post do
-            proj_data = JSON.parse(routing.body.read)
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
-            policy  = ProjectPolicy.new(account, project)
+            policy = ProjectPolicy.new(account, project)
             raise unless policy.can_edit?
+
+            proj_data = JSON.parse(routing.body.read)
             project.update(proj_data)
+
             response.status = 201
             { message: 'Project edited' }.to_json
           rescue StandardError => error
@@ -66,13 +70,12 @@ module Dada
         # POST api/v1/projects/[proj_id]/collaborator
         routing.on 'collaborator' do
           routing.post do
-            collaborators = JSON.parse(routing.body.read)
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
-            policy  = ProjectPolicy.new(account, project)
-
+            policy = ProjectPolicy.new(account, project)
             raise unless policy.can_add_collaborators?
 
+            collaborators = JSON.parse(routing.body.read)
             Dada::AddCollaboratorsByProjId.call(
               proj_id: proj_id, collaborators_email: collaborators
             )
@@ -89,13 +92,12 @@ module Dada
         # POST api/v1/projects/[proj_id]/remove_collaborator
         routing.on 'remove_collaborator' do
           routing.post do
-            collaborators = JSON.parse(routing.body.read)
             account = Account.first(username: @auth_account['username'])
             project = Project.first(id: proj_id)
-            policy  = ProjectPolicy.new(account, project)
-
+            policy = ProjectPolicy.new(account, project)
             raise unless policy.can_remove_collaborators?
 
+            collaborators = JSON.parse(routing.body.read)
             account = Account.first(username: collaborators['username'])
             project.remove_collaborator(account)
 
@@ -111,12 +113,13 @@ module Dada
         # POST api/v1/projects/[proj_id]/request
         routing.on 'request' do
           routing.post do
-            # account = Account.first(username: @auth_account['username'])
-            # project = Project.first(id: proj_id)
-            # policy  = ProjectPolicy.new(account, project)
-            # raise unless policy.can_edit?
+            account = Account.first(username: @auth_account['username'])
+            project = Project.first(id: proj_id)
+            policy = ProjectPolicy.new(account, project)
+            raise unless policy.can_add_requests?
 
             data = JSON.parse(routing.body.read)
+
             req_data = {}
             req_data['title'] = data['title']
             req_data['description'] = data['description']
@@ -136,6 +139,7 @@ module Dada
             Dada::CreateResponseForRequest.call(
               request_id: new_request.id, response_data: res_data
             )
+
             response.status = 201
             { message: 'Request saved' }.to_json
           rescue StandardError => error
@@ -145,16 +149,16 @@ module Dada
           end
         end
 
-        # POST api/v1/projects/[proj_id]
+        # GET api/v1/projects/[proj_id]
         routing.get do
-          # account = Account.first(username: 'agoeng.bhimasta')
-          account = Account.first(username: @auth_account['username'])
+          account = Account.first(username: 'agoeng.bhimasta')
+          # account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
-          policy  = ProjectPolicy.new(account, project)
+          policy = ProjectPolicy.new(account, project)
           raise unless policy.can_view?
           project.full_details
-                 .merge(policies: policy.summary)
-                 .to_json
+                  .merge(policies: policy.summary)
+                  .to_json
         rescue StandardError => error
           puts "ERROR: #{error.inspect}"
           puts error.backtrace
@@ -164,12 +168,11 @@ module Dada
 
       # GET api/v1/projects
       routing.get do
-        # account = Account.first(username: 'agoeng.bhimasta')
         account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable
-        proj = Projects.new(viewable_projects, account)
-        proj.to_json
+        project_list = Projects.new(viewable_projects, account)
+        project_list.to_json
         # JSON.pretty_generate(proj)
       rescue StandardError => error
         puts "ERROR: #{error.inspect}"

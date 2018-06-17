@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'base64'
 require 'rbnacl/libsodium'
 
-# Module to handle crypto logic
+# Extend this module into security library classes requiring cryptography
 module Securable
   # Generate key for Rake tasks (typically not called at runtime)
   def generate_key

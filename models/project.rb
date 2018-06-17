@@ -3,7 +3,6 @@
 require 'json'
 require 'sequel'
 
-
 require_relative 'account/account'
 module Dada
   # Models a project
@@ -49,7 +48,7 @@ module Dada
       to_h.merge(
         owner: owner,
         collaborators: collaborators,
-        requests: requests
+        requests: Requests.new(requests)
       )
     end
   end

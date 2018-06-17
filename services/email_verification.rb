@@ -19,7 +19,7 @@ module Dada
     end
 
     def email_body(registration)
-      verification_url = registration['verification_url']
+      verification_url = registration[:verification_url]
 
       <<~END_EMAIL
         <p>Dear #{registration['username']}, </p>
@@ -43,7 +43,7 @@ module Dada
         SENDGRID_URL,
         json: {
           personalizations: [{
-            to: [{ 'email' => registration['email'] }]
+            to: [{ 'email' => registration[:email] }]
           }],
           from: { 'email' => 'noreply@dada.com' },
           subject: 'Dada Registration Verification',
