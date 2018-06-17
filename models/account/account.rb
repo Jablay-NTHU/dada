@@ -21,19 +21,21 @@ module Dada
                  left_key: :collaborator_id, right_key: :project_id
 
     plugin :whitelist_security
-    set_allowed_columns :username, :email, :password
+    set_allowed_columns :username, :email, :password, :password_hash, :salt
+    # set_allowed_columns :username, :email, :password
 
     plugin :timestamps, update_on_create: true
 
-    # def password=(new_password)
-    #   self.salt = SecureDB.new_salt
-    #   self.password_hash = SecureDB.hash_password(salt, new_password)
-    # end
+    # only set the object, not yet store in db
+    def password=(new_password)
+      self.salt = SecureDB.new_salt
+      self.password_hash = SecureDB.hash_password(salt, new_password)
+    end
 
-    # def password?(try_password)
-    #   try_hashed = SecureDB.hash_password(salt, try_password)
-    #   try_hashed == password_hash
-    # end
+    def password_check(salt, try_password)
+      try_hashed = SecureDB.hash_password(salt, try_password)
+      return try_hashed == password_hash
+    end
 
     def projects
       owned_projects + collaborations
@@ -46,9 +48,7 @@ module Dada
           id: id,
           username: username,
           email: email
-#          password: password_hash
         }, options
-
       )
     end
   end
