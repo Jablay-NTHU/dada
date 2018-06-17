@@ -13,7 +13,8 @@ module Dada
         routing.on 'edit' do
           routing.post do
             data = JSON.parse(routing.body.read)
-            account = Account.first(username: 'victorlin12345')
+            account = Account.first(username: @auth_account['username'])
+            # account = Account.first(username: 'victorlin12345')
             account.password=(data['new_password'])
             edit_data = { :password_hash => account.password_hash, :salt => account.salt}
             result = account.update(edit_data).to_json
