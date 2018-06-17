@@ -8,6 +8,27 @@ module Dada
     route('accounts') do |routing|
       @account_route = "#{@api_root}/accounts"
 
+      # POST api/v1/accounts/password/edit
+      routing.on 'password' do
+        routing.on 'edit' do
+          routing.post do
+            data = JSON.parse(routing.body.read)
+            account = Account.first(username: 'victorlin12345')
+            account.password=(data['new_password'])
+            edit_data = { :password_hash => account.password_hash, :salt => account.salt}
+            result = account.update(edit_data).to_json
+            response.status = 201
+            response['Location'] = "#{@account_route}/password/edit"
+            { message: 'Password edited'}.to_json
+          rescue Sequel::MassAssignmentRestriction
+            routing.halt 400, { message: 'Illegal Request' }.to_json
+          rescue StandardError => error
+            puts "ERROR CREATING ACCOUNT: #{error.inspect}"
+            puts error.backtrace
+            routing.halt 500, { message: error.message }.to_json
+          end
+        end
+      end
       routing.on String do |username|
         # GET api/v1/accounts/[USERNAME]
         routing.get do
