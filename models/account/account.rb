@@ -46,7 +46,9 @@ module Dada
           id: id,
           username: username,
           email: email
+#          password: password_hash
         }, options
+
       )
     end
   end
