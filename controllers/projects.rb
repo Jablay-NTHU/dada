@@ -151,7 +151,8 @@ module Dada
 
         # GET api/v1/projects/[proj_id]
         routing.get do
-          account = Account.first(username: @auth_account['username'])
+          account = Account.first(username: 'agoeng.bhimasta')
+          # account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
           policy = ProjectPolicy.new(account, project)
           raise unless policy.can_view?

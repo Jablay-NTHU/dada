@@ -15,7 +15,6 @@ module Dada
         routing.on 'edit' do
           routing.post do
             edit_data = JSON.parse(routing.body.read)
-
             account = Account.first(username: @auth_account['username'])
             request = Request.first(id: req_id)
             policy = RequestPolicy.new(account, request)
