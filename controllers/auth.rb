@@ -11,24 +11,19 @@ module Dada
         routing.post do
           #recovery_data = JSON.parse(routing.body.read)
           recovery_data = JsonRequestBody.parse_symbolize(request.body.read)
-          puts "1#{recovery_data}"
           email_check = EmailAccount.first(email: recovery_data[:email])
-          puts "2 #{recovery_data[:email]}"
-          puts "3 #{email_check.password_hash}"
-
           EmailRecovery.new(Api.config).call(recovery_data)
-          response.status = 201 
+          response.status = 201
           { message: 'Verification email sent' }.to_json
-
         rescue NotRegistered => error
           routing.halt 400, { message: error.message }.to_json
         rescue StandardError => error
           puts "ERROR VERIFYING Email:  #{error.inspect}"
-          puts error.message 
+          puts error.message
           routing.halt 500
         end
       end
-      
+
       routing.on 'authenticate' do
         routing.post 'sso_account' do
           auth_request = SignedRequest.new(Api.config)
