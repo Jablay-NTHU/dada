@@ -3,8 +3,8 @@
 module Dada
     # Edit profile
     class EditProfile
-      def self.call(account: ,data:)
-        account.update(data)
+      def self.call(id: ,data:)
+        Account.where(id: id).update(data)
       end
     end
 end

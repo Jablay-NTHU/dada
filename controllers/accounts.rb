@@ -23,18 +23,18 @@ module Dada
         end
       end
 
-      # POST api/v1/accounts/img/edit
+      # POST api/v1/accounts/profile/edit
       routing.on 'profile' do
         routing.on 'edit' do
           routing.post do
             data = JSON.parse(routing.body.read)
+            account = Account.first(username: @auth_account['username'])
             puts data
-            # account = Account.first(username: @auth_account['username'])
-            account = Account.first(username: 'victorlin12345')
-            Dada::EditProfile.call(account: account, data: data)
+            # account = Account.first(username: 'victorlin12345')         
+            edited_account = Dada::EditProfile.call(id: account.id, data: data)
             response.status = 201
             response['Location'] = "#{@account_route}/profile/edit"
-            { message: 'Profile edited' }.to_json
+            { message: 'Profile edited'}.to_json
           rescue Sequel::MassAssignmentRestriction
             routing.halt 400, { message: 'Illegal Request' }.to_json
           rescue StandardError => error
@@ -74,10 +74,10 @@ module Dada
         end
       end
 
-      # GET api/v1/accounts/
+      # GET api/v1/accounts
       routing.get do
-        # account = Account.first(username: @auth_account['username'])
-        account = Account.first(username: 'victorlin12345')
+        account = Account.first(username: @auth_account['username'])
+        # account = Account.first(username: 'victorlin12345')
         account ? account.to_json : raise('Account not found')
       rescue StandardError => error
         puts "ERROR GETTING ACCOUNT: #{error.inspect}"
