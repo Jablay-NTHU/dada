@@ -54,7 +54,8 @@ module Dada
 
       # GET api/v1/accounts/
       routing.get do
-        account = Account.first(username: @auth_account['username'])
+        # account = Account.first(username: @auth_account['username'])
+        account = Account.first(username: 'victorlin12345')
         account ? account.to_json : raise('Account not found')
       rescue StandardError => error
         puts "ERROR GETTING ACCOUNT: #{error.inspect}"

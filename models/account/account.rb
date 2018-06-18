@@ -47,7 +47,8 @@ module Dada
           type: 'type',
           id: id,
           username: username,
-          email: email
+          email: email,
+          profile_img: profile_img
         }, options
       )
     end
