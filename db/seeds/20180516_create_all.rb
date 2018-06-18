@@ -76,7 +76,6 @@ def create_tokens
   end
 end
 
-
 def add_collaborators
   collaborators_info = COLLS_INFO
   collaborators_info.each do |collaborator|
