@@ -41,13 +41,13 @@ module Dada
         # POST /api/v1/auth/authenticate/email_account
         routing.post 'email_account' do
           credentials = SignedRequest.new(Api.config)
-                                     .parse(request.body.read)          
+                                     .parse(request.body.read)
           auth_account = AuthenticateEmailAccount.call(credentials)
           auth_account.to_json
         rescue StandardError => error
           puts "ERROR: #{error.class}: #{error.message}"
           routing.halt '403', { message: 'Invalid credentials' }.to_json
-        end        
+        end
         # routing.route('authenticate', 'auth')
       end
       routing.on 'register' do

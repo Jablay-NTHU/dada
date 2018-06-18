@@ -7,6 +7,7 @@ describe 'Test Document Handling' do
 
   before do
     wipe_database
+    SecureMessage.setup(app.config)
   end
 
   describe 'Account information' do
@@ -66,7 +67,8 @@ describe 'Test Document Handling' do
     it 'HAPPY: should authenticate valid credentials' do
       credentials = { username: @account_data['username'],
                       password: @account_data['password'] }
-      post 'api/v1/auth/authenticate', credentials.to_json, @req_header
+      signed_credentials = SecureMessage.sign(credentials)
+      post 'api/v1/auth/authenticate', signed_credentials.to_json, @req_header
 
       _(last_response.status).must_equal 200
       auth_account = JSON.parse(last_response.body)
