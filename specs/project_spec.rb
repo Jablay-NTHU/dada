@@ -24,13 +24,20 @@ describe 'Test Project Handling' do
     post 'api/v1/auth/authenticate/email_account', signed_credentials.to_json, req_header
     result = JSON.parse(last_response.body)
     @auth_token = "Bearer #{result['auth_token']}"
-    @req_header = { 'CONTENT_TYPE' => 'application/json','HTTP_AUTHORIZATION' => @auth_token }
+    @req_header = { 'CONTENT_TYPE' => 'application/json',
+                    'HTTP_AUTHORIZATION' => @auth_token }
   end
 
   it 'HAPPY: should be able to get list of all projects' do
-    Dada::CreateProjectForOwner.call(owner_id: @account.id, project_data: DATA[:projects][0])
-    Dada::CreateProjectForOwner.call(owner_id: @account.id, project_data: DATA[:projects][1])
-    Dada::CreateProjectForOwner.call(owner_id: @account.id, project_data: DATA[:projects][2])
+    Dada::CreateProjectForOwner.call(
+      owner_id: @account.id, project_data: DATA[:projects][0]
+    )
+    Dada::CreateProjectForOwner.call(
+      owner_id: @account.id, project_data: DATA[:projects][1]
+    )
+    Dada::CreateProjectForOwner.call(
+      owner_id: @account.id, project_data: DATA[:projects][2]
+    )
 
     get 'api/v1/projects', nil, @req_header
     _(last_response.status).must_equal 200
@@ -41,7 +48,9 @@ describe 'Test Project Handling' do
 
   it 'HAPPY: should be able to get details of a single project' do
     existing_proj = DATA[:projects][1]
-    Dada::CreateProjectForOwner.call(owner_id: @account.id, project_data: DATA[:projects][1])
+    Dada::CreateProjectForOwner.call(
+      owner_id: @account.id, project_data: DATA[:projects][1]
+    )
     id = Dada::Project.first.id
     # Dada::Project.create(existing_proj).save
 

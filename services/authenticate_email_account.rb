@@ -19,9 +19,8 @@ module Dada
       raise StandardError unless account.password?(credentials[:password])
 
       { account: account, auth_token: AuthToken.create(account) }
-    rescue StandardError => error
-      puts error.message
-      # raise UnauthorizedError, credentials
+    rescue StandardError
+      raise UnauthorizedError, credentials
     end
   end
 end

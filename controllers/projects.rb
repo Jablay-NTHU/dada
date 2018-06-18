@@ -156,9 +156,9 @@ module Dada
           policy = ProjectPolicy.new(account, project)
           raise unless policy.can_view?
           project.full_details
-                  .merge(policies: policy.summary)
-                  .to_json
-        rescue StandardError => error
+                 .merge(policies: policy.summary)
+                 .to_json
+        rescue StandardError
           # puts "ERROR: #{error.inspect}"
           # puts error.backtrace
           routing.halt 404, { message: 'Project not found' }.to_json
@@ -187,7 +187,7 @@ module Dada
           owner_id: account.id, project_data: proj_data
         )
         response.status = 201
-        response['Location'] = "#{@proj_route}"
+        response['Location'] = @proj_route.to_s
         { message: 'Project saved', data: new_proj }.to_json
       rescue Sequel::MassAssignmentRestriction
         routing.halt 400, { message: 'Illegal Request' }.to_json
