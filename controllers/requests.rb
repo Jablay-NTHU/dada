@@ -48,6 +48,28 @@ module Dada
           end
         end
 
+        # POST /requests/[req_id]/response
+        routing.on 'response' do
+          routing.post do
+            account = Account.first(username: @auth_account['username'])
+            request = Request.first(id: req_id)
+            policy = RequestPolicy.new(account, request)
+            raise unless policy.can_add_response?
+
+            res_data = JSON.parse(routing.body.read)
+            new_response = Dada::CreateResponseForRequest.call(
+              request_id: req_id, response_data: res_data
+            )
+            response.status = 201
+            response['Location'] = "#{@req_route}/#{req_id}/response"
+            { message: 'Response saved', data: new_response }.to_json
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
+            routing.halt 404, { message: 'Request not found' }.to_json
+          end
+        end
+
         # GET /requests/[req_id]
         routing.get do
           account = Account.first(username: @auth_account['username'])
@@ -57,7 +79,7 @@ module Dada
           request.full_details
                  .merge(policies: policy.summary)
                  .to_json
-        rescue StandardError => error
+        rescue StandardError # => error
           # puts "ERROR: #{error.inspect}"
           # puts error.backtrace
           routing.halt 404, { message: 'Request not found' }.to_json
