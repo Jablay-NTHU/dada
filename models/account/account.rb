@@ -21,7 +21,7 @@ module Dada
                  left_key: :collaborator_id, right_key: :project_id
 
     plugin :whitelist_security
-    set_allowed_columns :username, :email, :password, :password_hash, :salt
+    set_allowed_columns :username, :email, :password, :password_hash, :salt, :profile
     # set_allowed_columns :username, :email, :password
 
     plugin :timestamps, update_on_create: true
@@ -47,7 +47,8 @@ module Dada
           type: 'type',
           id: id,
           username: username,
-          email: email
+          email: email,
+          profile: profile
         }, options
       )
     end
