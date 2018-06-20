@@ -24,15 +24,33 @@ module Dada
       end
 
       routing.on 'authenticate' do
-        routing.post 'sso_account' do
+        # POST /auth/authenticate/github_account
+        routing.post 'github_account' do
           auth_request = SignedRequest.new(Api.config)
                                       .parse(request.body.read)
+          
           sso_account, auth_token =
-            AuthenticateSsoAccount.new(Api.config)
-                                  .call(auth_request[:access_token])
+            AuthenticateGithubAccount.new(Api.config)
+                                     .call(auth_request[:access_token])
+          puts "sso: #{sso_account}"
           { account: sso_account, auth_token: auth_token }.to_json
         rescue StandardError => error
           puts "FAILED to validate Github account: #{error.inspect}"
+          puts error.backtrace
+          routing.halt 400
+        end
+
+        # POST /auth/authenticate/google_account
+        routing.post 'google_account' do
+          auth_request = SignedRequest.new(Api.config)
+                                      .parse(request.body.read)
+          puts "auth_req: #{auth_request}"
+          sso_account, auth_token =
+            AuthenticateGoogleAccount.new(Api.config)
+                                     .call(auth_request[:access_token])
+          { account: sso_account, auth_token: auth_token }.to_json
+        rescue StandardError => error
+          puts "FAILED to validate Google account: #{error.inspect}"
           puts error.backtrace
           routing.halt 400
         end
