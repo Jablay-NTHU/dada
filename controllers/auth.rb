@@ -9,9 +9,8 @@ module Dada
       routing.on 'forget_password' do
         # POST api/v1/auth/forget_password
         routing.post do
-          # recovery_data = JSON.parse(routing.body.read)
           recovery_data = JsonRequestBody.parse_symbolize(request.body.read)
-          email_check = EmailAccount.first(email: recovery_data[:email])
+          EmailAccount.first(email: recovery_data[:email])
           EmailRecovery.new(Api.config).call(recovery_data)
           response.status = 201
           { message: 'Verification email sent' }.to_json

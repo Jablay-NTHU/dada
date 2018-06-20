@@ -136,12 +136,13 @@ module Dada
             res_data['header'] = data['header']
             res_data['body'] = data['body']
 
-            Dada::CreateResponseForRequest.call(
+            new_request = Dada::CreateResponseForRequest.call(
               request_id: new_request.id, response_data: res_data
             )
 
             response.status = 201
-            { message: 'Request saved' }.to_json
+            response['Location'] = "#{@proj_route}/#{proj_id}/request"
+            { message: 'Request saved', data: new_request }.to_json
           rescue StandardError => error
             puts "ERROR: #{error.inspect}"
             puts error.backtrace
@@ -151,17 +152,16 @@ module Dada
 
         # GET api/v1/projects/[proj_id]
         routing.get do
-          account = Account.first(username: 'agoeng.bhimasta')
-          # account = Account.first(username: @auth_account['username'])
+          account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
           policy = ProjectPolicy.new(account, project)
           raise unless policy.can_view?
           project.full_details
-                  .merge(policies: policy.summary)
-                  .to_json
-        rescue StandardError => error
-          puts "ERROR: #{error.inspect}"
-          puts error.backtrace
+                 .merge(policies: policy.summary)
+                 .to_json
+        rescue StandardError
+          # puts "ERROR: #{error.inspect}"
+          # puts error.backtrace
           routing.halt 404, { message: 'Project not found' }.to_json
         end
       end
@@ -188,6 +188,7 @@ module Dada
           owner_id: account.id, project_data: proj_data
         )
         response.status = 201
+        response['Location'] = @proj_route.to_s
         { message: 'Project saved', data: new_proj }.to_json
       rescue Sequel::MassAssignmentRestriction
         routing.halt 400, { message: 'Illegal Request' }.to_json

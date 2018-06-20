@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 # run pry -r <path/to/this/file>
-require 'rack/test'
-include Rack::Test::Methods
+# require 'rack/test'
+# include Rack::Test::Methods
 
-require_relative '../init'
-# require_relative '../app'
-# require_relative '../models/project'
-# require_relative '../models/request'
-# require_relative '../models/response'
+# require_relative '../init'
+require './init.rb'
+require 'rack/test'
+
+include Rack::Test::Methods
 
 def app
   Dada::Api

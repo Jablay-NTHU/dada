@@ -8,7 +8,7 @@ module Dada
   class Account < Sequel::Model
     plugin :single_table_inheritance, :type,
            model_map: { 'email' => 'Dada::EmailAccount',
-                        'sso' => 'Dada::SsoAccount'}
+                        'sso' => 'Dada::SsoAccount' }
     one_to_many :owned_projects, class: :'Dada::Project', key: :owner_id
     plugin :association_dependencies, owned_projects: :destroy
 
