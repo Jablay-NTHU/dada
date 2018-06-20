@@ -136,12 +136,13 @@ module Dada
             res_data['header'] = data['header']
             res_data['body'] = data['body']
 
-            Dada::CreateResponseForRequest.call(
+            new_request = Dada::CreateResponseForRequest.call(
               request_id: new_request.id, response_data: res_data
             )
 
             response.status = 201
-            { message: 'Request saved' }.to_json
+            response['Location'] = "#{@proj_route}/#{proj_id}/request"
+            { message: 'Request saved', data: new_request }.to_json
           rescue StandardError => error
             puts "ERROR: #{error.inspect}"
             puts error.backtrace

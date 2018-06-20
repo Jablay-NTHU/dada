@@ -29,15 +29,11 @@ describe 'Test Project Handling' do
   end
 
   it 'HAPPY: should be able to get list of all projects' do
-    Dada::CreateProjectForOwner.call(
-      owner_id: @account.id, project_data: DATA[:projects][0]
-    )
-    Dada::CreateProjectForOwner.call(
-      owner_id: @account.id, project_data: DATA[:projects][1]
-    )
-    Dada::CreateProjectForOwner.call(
-      owner_id: @account.id, project_data: DATA[:projects][2]
-    )
+    DATA[:projects].each do |project_data|
+      Dada::CreateProjectForOwner.call(
+        owner_id: @account.id, project_data: project_data
+      )
+    end
 
     get 'api/v1/projects', nil, @req_header
     _(last_response.status).must_equal 200
@@ -52,7 +48,6 @@ describe 'Test Project Handling' do
       owner_id: @account.id, project_data: DATA[:projects][1]
     )
     id = Dada::Project.first.id
-    # Dada::Project.create(existing_proj).save
 
     get "/api/v1/projects/#{id}", nil, @req_header
     _(last_response.status).must_equal 200

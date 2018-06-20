@@ -58,8 +58,8 @@ module Dada
                  .merge(policies: policy.summary)
                  .to_json
         rescue StandardError => error
-          puts "ERROR: #{error.inspect}"
-          puts error.backtrace
+          # puts "ERROR: #{error.inspect}"
+          # puts error.backtrace
           routing.halt 404, { message: 'Request not found' }.to_json
         end
       end
