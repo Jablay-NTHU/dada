@@ -7,8 +7,8 @@ module Dada
   # Models a registered account
   class Account < Sequel::Model
     plugin :single_table_inheritance, :type,
-            model_map: { 'email' => 'Dada::EmailAccount',
-                         'sso'   => 'Dada::SsoAccount' }
+           model_map: { 'email' => 'Dada::EmailAccount',
+                        'sso' => 'Dada::SsoAccount'}
     one_to_many :owned_projects, class: :'Dada::Project', key: :owner_id
     plugin :association_dependencies, owned_projects: :destroy
 
@@ -34,7 +34,7 @@ module Dada
 
     def password_check(salt, try_password)
       try_hashed = SecureDB.hash_password(salt, try_password)
-      return try_hashed == password_hash
+      try_hashed == password_hash
     end
 
     def projects
