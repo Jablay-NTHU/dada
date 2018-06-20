@@ -12,6 +12,7 @@ Sequel.migration do
       String :email, null: false, unique: true
       String :password_hash
       String :salt
+      String :profile
       DateTime :created_at
       DateTime :updated_at
 

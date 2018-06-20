@@ -23,6 +23,28 @@ module Dada
         end
       end
 
+      # POST api/v1/accounts/profile/edit
+      routing.on 'profile' do
+        routing.on 'edit' do
+          routing.post do
+            data = JSON.parse(routing.body.read)
+            account = Account.first(username: @auth_account['username'])
+            puts data
+            # account = Account.first(username: 'victorlin12345')         
+            edited_account = Dada::EditProfile.call(id: account.id, data: data)
+            response.status = 201
+            response['Location'] = "#{@account_route}/profile/edit"
+            { message: 'Profile edited'}.to_json
+          rescue Sequel::MassAssignmentRestriction
+            routing.halt 400, { message: 'Illegal Request' }.to_json
+          rescue StandardError => error
+            puts "ERROR CREATING ACCOUNT: #{error.inspect}"
+            puts error.backtrace
+            routing.halt 500, { message: error.message }.to_json
+          end
+        end
+      end
+
       # POST api/v1/accounts/password/edit
       routing.on 'password' do
         routing.on 'edit' do
