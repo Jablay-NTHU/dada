@@ -58,7 +58,6 @@ describe 'Test Request Handling' do
     end
 
     it 'SAD: should return error if unknown document requested' do
-      req = Dada::Request.first
       get "/api/v1/requests/foobar", nil, @req_header
       _(last_response.status).must_equal 404
     end
@@ -68,32 +67,30 @@ describe 'Test Request Handling' do
     before do
       @proj = Dada::Project.first
       @req_data = DATA[:requests][1]
-      @res_data = DATA[:responses][1]
-      @request = @req_data.merge(@res_data)
     end
 
     it 'HAPPY: should be able to create new request' do
       post "api/v1/projects/#{@proj.id}/request",
-           @request.to_json, @req_header
+           @req_data.to_json, @req_header
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
       created = JSON.parse(last_response.body)['data']
       req = Dada::Request.first
 
-      _(created['request']['id']).must_equal req.id
-      _(created['request']['api_url']).must_equal @req_data['api_url']
-      _(created['request']['interval']).must_equal @req_data['interval']
+      _(created['id']).must_equal req.id
+      _(created['api_url']).must_equal @req_data['api_url']
+      _(created['interval']).must_equal @req_data['interval']
     end
 
-    # it 'BAD: should not create request with illegal attributes' do
-    #   bad_data = @request.clone
-    #   bad_data['created_at'] = '1900-01-01'
-    #   post "api/v1/projects/#{@proj.id}/request",
-    #        bad_data.to_json, @req_header
+    it 'BAD: should not create request with illegal attributes' do
+      bad_data = @req_data.clone
+      bad_data['created_at'] = '1900-01-01'
+      post "api/v1/projects/#{@proj.id}/request",
+           bad_data.to_json, @req_header
 
-    #   _(last_response.status).must_equal 400
-    #   _(last_response.header['Location']).must_be_nil      
-    # end
+      _(last_response.status).must_equal 404
+      _(last_response.header['Location']).must_be_nil
+    end
   end
 end
