@@ -3,14 +3,15 @@
 require 'http'
 
 module Dada
-  # Find or create an SsoAccount based on Github code
-  class AuthenticateSsoAccount
+  # Find or create an GithubAccount based on Github code
+  class AuthenticateGithubAccount
     def initialize(config)
       @config = config
     end
 
     def call(access_token)
       github_account = get_github_account(access_token)
+      puts "gh_acc: #{github_account}"
       sso_account = find_or_create_sso_account(github_account)
 
       [sso_account, AuthToken.create(sso_account)]
@@ -23,17 +24,19 @@ module Dada
                                  authorization: "token #{access_token}",
                                  accept: 'application/json')
                         .get('https://api.github.com/user')
-
+      puts "gh_resp: #{gh_response}"
       raise unless gh_response.status == 200
-      account = GithubAccount.new(gh_response.parse)
+      account = GhAccount.new(gh_response.parse)
       { username: account.username, email: account.email }
     end
 
     def find_or_create_sso_account(github_account)
-      SsoAccount.first(github_account) || SsoAccount.create(github_account)
+      puts "GH: #{github_account}"
+      puts "ghAcc: #{SsoAccount.first(github_account)}"
+      SsoAccount.first(email:google_account[:email]) || SsoAccount.create(google_account)
     end
 
-    class GithubAccount
+    class GhAccount
       def initialize(gh_account)
         @gh_account = gh_account
       end
