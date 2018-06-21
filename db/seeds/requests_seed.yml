@@ -1,7 +1,7 @@
 ---
 - title: 'City Route'
   description: 'Getting all bus route information from a {city}'
-  api_url: 'www.motc.gov/v1/bus/routes/city/#{0}'
+  call_url: 'www.motc.gov/v1/bus/routes/city/#{0}'
   interval: 'once'
   parameters: '"---\n-key: something\n  another: value"'
   date_start: '2018-04-28'
@@ -10,7 +10,7 @@
   xml_path: 'salkdfa1i2j421ir903fjienvwifwe'
 - title: 'City Bus Stop'
   description: 'Getting all but stop information from a {city}'
-  api_url: 'www.motc.gov/v1/bus/stops/city/#{0}' 
+  call_url: 'www.motc.gov/v1/bus/stops/city/#{0}' 
   interval: 'weekly sunday'
   parameters: '"---\n-key: something\n  another: value"'
   date_start: '2018-04-29'

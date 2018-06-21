@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'roda'
-
 module Dada
   # Web controller for Dada API
   class Api < Roda
@@ -10,6 +9,36 @@ module Dada
 
       # GET api/v1/requests/[req_id]
       routing.on String do |req_id|
+        # POST /requests/[req_id]/delete
+        routing.on 'request_call' do
+          routing.get do
+            account = Account.first(username: @auth_account['username'])
+            request = Request.first(id: req_id)
+            policy = RequestPolicy.new(account, request)
+            raise unless policy.can_add_response?
+            # Calling the api
+            parameters = YAML.safe_load(request.parameters)
+
+            # Should be able to call api
+            test_request = HTTP.headers(parameters)
+                               .get(request.call_url)
+
+            res_data = {}
+            res_data['status_code'] = test_request.code
+            res_data['header'] = test_request.headers.to_hash.to_yaml
+            res_data['body'] = test_request.body
+
+            new_response = Dada::CreateResponseForRequest.call(
+              request_id: req_id, response_data: res_data
+            )
+            response.status = 201
+            { message: 'Response added', data: request }.to_json
+          rescue StandardError => error
+            puts "ERROR: #{error.inspect}"
+            puts error.backtrace
+            routing.halt 404, { message: 'Request not found' }.to_json
+          end
+        end
 
         # POST /requests/[req_id]/edit
         routing.on 'edit' do
@@ -40,7 +69,7 @@ module Dada
             raise unless policy.can_delete?
             Request.where(id: req_id).destroy
             response.status = 201
-            { message: 'Request deleted' }.to_json
+            { message: 'Request deleted', data: request }.to_json
           rescue StandardError => error
             puts "ERROR: #{error.inspect}"
             puts error.backtrace
