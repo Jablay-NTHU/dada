@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 ruby '2.5.1'
 
+gem 'http_headers'
+
 # Web API
 gem 'puma'
 gem 'roda'
