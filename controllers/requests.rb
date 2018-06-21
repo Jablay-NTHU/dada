@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'roda'
-require 'http_headers'
 module Dada
   # Web controller for Dada API
   class Api < Roda
@@ -10,7 +9,6 @@ module Dada
 
       # GET api/v1/requests/[req_id]
       routing.on String do |req_id|
-
         # POST /requests/[req_id]/delete
         routing.on 'request_call' do
           routing.get do
@@ -19,11 +17,11 @@ module Dada
             policy = RequestPolicy.new(account, request)
             raise unless policy.can_add_response?
             # Calling the api
-            parameters = YAML.load(request.parameters)
+            parameters = YAML.safe_load(request.parameters)
 
             # Should be able to call api
             test_request = HTTP.headers(parameters)
-                               .get(request.api_url)
+                               .get(request.call_url)
 
             res_data = {}
             res_data['status_code'] = test_request.code

@@ -124,15 +124,16 @@ module Dada
             response.status = 201
             response['Location'] = "#{@proj_route}/#{proj_id}/request"
             { message: 'Request saved', data: new_request }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
 
         # GET api/v1/projects/[proj_id]
         routing.get do
+          # account = Account.first(username: 'agoeng.bhimasta')
           account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
           policy = ProjectPolicy.new(account, project)
@@ -149,6 +150,7 @@ module Dada
 
       # GET api/v1/projects
       routing.get do
+        # account = Account.first(username: 'agoeng.bhimasta')
         account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable

@@ -54,7 +54,7 @@ describe 'Test Request Handling' do
 
       result = JSON.parse last_response.body
       _(result['id']).must_equal req.id
-      _(result['api_url']).must_equal req.api_url
+      _(result['call_url']).must_equal req.call_url
     end
 
     it 'SAD: should return error if unknown document requested' do
@@ -79,7 +79,7 @@ describe 'Test Request Handling' do
       req = Dada::Request.first
 
       _(created['id']).must_equal req.id
-      _(created['api_url']).must_equal @req_data['api_url']
+      _(created['call_url']).must_equal @req_data['call_url']
       _(created['interval']).must_equal @req_data['interval']
     end
 

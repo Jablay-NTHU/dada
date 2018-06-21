@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 ruby '2.5.1'
 
 gem 'http_headers'
+gem 'jsonpath'
 
 # Web API
 gem 'puma'
