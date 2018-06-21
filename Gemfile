@@ -22,6 +22,7 @@ gem 'rbnacl-libsodium'
 
 # Services
 gem 'http'
+gem 'jsonpath'
 
 # Database
 gem 'sequel'
