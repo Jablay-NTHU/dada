@@ -28,7 +28,6 @@ module Dada
         routing.post 'github_account' do
           auth_request = SignedRequest.new(Api.config)
                                       .parse(request.body.read)
-          
           sso_account, auth_token =
             AuthenticateGithubAccount.new(Api.config)
                                      .call(auth_request[:access_token])

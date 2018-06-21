@@ -32,8 +32,10 @@ module Dada
 
     def find_or_create_sso_account(github_account)
       puts "GH: #{github_account}"
-      puts "ghAcc: #{SsoAccount.first(github_account)}"
-      SsoAccount.first(email:google_account[:email]) || SsoAccount.create(google_account)
+      puts "ghAcc: #{SsoAccount.first(email: github_account[:email])}"
+      SsoAccount.first(email: github_account[:email]) || 
+        EmailAccount.first(email: github_account[:email]) ||
+        SsoAccount.create(github_account)
     end
 
     class GhAccount

@@ -100,7 +100,6 @@ module Dada
             collaborators = JSON.parse(routing.body.read)
             account = Account.first(username: collaborators['username'])
             project.remove_collaborator(account)
-
             response.status = 201
             { message: 'Collaborator added' }.to_json
           rescue StandardError => error
@@ -118,40 +117,23 @@ module Dada
             policy = ProjectPolicy.new(account, project)
             raise unless policy.can_add_requests?
 
-            data = JSON.parse(routing.body.read)
-
-            req_data = {}
-            req_data['title'] = data['title']
-            req_data['description'] = data['description']
-            req_data['api_url'] = data['api_url']
-            req_data['parameters'] = data['parameters']
-            req_data['interval'] = data['interval']
-
+            req_data = JSON.parse(routing.body.read)
             new_request = Dada::CreateRequestForProject.call(
               project_id: proj_id, request_data: req_data
             )
-
-            res_data = {}
-            res_data['status_code'] = data['status_code']
-            res_data['header'] = data['header']
-            res_data['body'] = data['body']
-
-            new_request = Dada::CreateResponseForRequest.call(
-              request_id: new_request.id, response_data: res_data
-            )
-
             response.status = 201
             response['Location'] = "#{@proj_route}/#{proj_id}/request"
             { message: 'Request saved', data: new_request }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
 
         # GET api/v1/projects/[proj_id]
         routing.get do
+          # account = Account.first(username: 'agoeng.bhimasta')
           account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
           policy = ProjectPolicy.new(account, project)
@@ -168,6 +150,7 @@ module Dada
 
       # GET api/v1/projects
       routing.get do
+        # account = Account.first(username: 'agoeng.bhimasta')
         account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable

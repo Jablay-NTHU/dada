@@ -3,6 +3,8 @@
 require 'rbnacl/libsodium'
 require 'base64'
 
+require_relative 'securable.rb'
+
 # Parses Json information as needed
 class SignedRequest
   extend Securable

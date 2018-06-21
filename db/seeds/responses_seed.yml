@@ -1,7 +1,7 @@
 ---
 - status_code: '200'
   header: "---\n-key: something\n  another: value"
-  body: "---\n-key: amazing\n  another: secrets"
+  body: '{id":24102803,"node_id":"MDEwOlJlcG9zaXRvcnkyNDEwMjgwMw==","name":"pinaple-sas","full_name":"bhimasta/pinaple-sas"}'
 - status_code: '404'
   header: "---\n-key: something\n  another: value"
-  body: "---\n-key: super\n  another: lies"
+  body: '{id":24102803,"node_id":"MDEwOlJlcG9zaXRvcnkyNDEwMjgwMw==","name":"pinaple-sas","full_name":"bhimasta/pinaple-sas"}'

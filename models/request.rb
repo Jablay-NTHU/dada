@@ -14,8 +14,8 @@ module Dada
     plugin :timestamps
     plugin :whitelist_security
 
-    set_allowed_columns :project_id, :title, :description, :api_url,
-                        :interval, :parameters, :date_start, :date_end,
+    set_allowed_columns :project_id, :title, :description, :call_url,
+                        :interval, :parameters, :date_start, :date_end, :next_request,
                         :json_path, :xml_path
 
     def parameters
@@ -32,11 +32,12 @@ module Dada
         id: id,
         title: title,
         description: description,
-        api_url: api_url,
+        call_url: call_url,
         interval: interval,
         parameters: parameters,
         date_start: date_start,
         date_end: date_end,
+        next_request: next_request,
         json_path: json_path,
         xml_path: xml_path,
         created_at: created_at,

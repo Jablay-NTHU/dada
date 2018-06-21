@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
 ruby '2.5.1'
 
+gem 'http_headers'
+gem 'jsonpath'
+
 # Web API
 gem 'puma'
 gem 'roda'
@@ -19,6 +22,7 @@ gem 'rbnacl-libsodium'
 
 # Services
 gem 'http'
+gem 'jsonpath'
 
 # Database
 gem 'sequel'
