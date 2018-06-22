@@ -118,15 +118,33 @@ module Dada
             raise unless policy.can_add_requests?
 
             req_data = JSON.parse(routing.body.read)
-            new_request = Dada::CreateRequestForProject.call(
+            req = Dada::CreateRequestForProject.call(
               project_id: proj_id, request_data: req_data
             )
+            # if !once --> time = 1 / 7 / 30
+            if req.interval != 'once'
+              seq = 1 if req.interval == 'daily'
+              seq = 7 if req.interval == 'weekly'
+              seq = 30 if req.interval == 'monthly'
+              puts seq
+              next_interval = req.date_start + seq
+              if (next_interval) <= req.date_end
+                Dada::Request.where(id: req.id)
+                             .update(next_request: next_interval)
+              end
+            end
+            # puts y
+            # puts y.class
+            # puts y.interval
+            # puts y.date_start
+            # puts next_interval
+
             response.status = 201
             response['Location'] = "#{@proj_route}/#{proj_id}/request"
-            { message: 'Request saved', data: new_request }.to_json
-          rescue StandardError # => error
-            # puts "ERROR: #{error.inspect}"
-            # puts error.backtrace
+            { message: 'Request saved', data: req }.to_json
+          rescue StandardError => error
+            puts "ERROR: #{error.inspect}"
+            puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end

@@ -21,7 +21,7 @@ module Dada
 
     def email_recovery_body(email_data)
       verification_url = email_data[:verification_url]
-      puts "#{verification_url}"
+      # puts "#{verification_url}"
 
       <<~END_EMAIL
         <p>Dear #{email_data[:email]}, </p>

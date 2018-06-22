@@ -40,31 +40,10 @@ module Dada
           end
         end
 
-        # POST /requests/[req_id]/edit
-        routing.on 'edit' do
-          routing.post do
-            edit_data = JSON.parse(routing.body.read)
-            account = Account.first(username: @auth_account['username'])
-            request = Request.first(id: req_id)
-            policy = RequestPolicy.new(account, request)
-            raise unless policy.can_edit_requests?
-            Dada::EditRequest.call(
-              request_id: req_id, edit_data: edit_data
-            )
-            response.status = 201
-            { message: 'Request edited' }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
-            routing.halt 404, { message: 'Request not found' }.to_json
-          end
-        end
-
         # POST /requests/[req_id]/delete
         routing.on 'delete' do
           routing.post do
             account = Account.first(username: @auth_account['username'])
-            # account = Account.first(username: 'victorlin12345')
             request = Request.first(id: req_id)
             policy = RequestPolicy.new(account, request)
             raise unless policy.can_delete?
@@ -76,6 +55,43 @@ module Dada
             puts error.backtrace
             routing.ha
             lt 404, { message: 'Request not found' }.to_json
+          end
+        end
+
+        # POST /requests/[req_id]/edit
+        routing.on 'edit' do
+          routing.post do
+            account = Account.first(username: @auth_account['username'])
+            request = Request.first(id: req_id)
+            policy = RequestPolicy.new(account, request)
+            raise unless policy.can_edit?
+
+            req_data = JSON.parse(routing.body.read)
+            Request.where(id: req_id).update(req_data)
+            req = Request.first(id: req_id)
+            # puts req
+            # if !once --> time = 1 / 7 / 30
+            next_interval = ''
+            if req.interval != 'once'
+              seq = 1 if req.interval == 'daily'
+              seq = 7 if req.interval == 'weekly'
+              seq = 30 if req.interval == 'monthly'
+              next_interval = req.date_start + seq
+              next_interval = '' if next_interval > req.date_end
+            end
+            Dada::Request.where(id: req_id).update(next_request: next_interval)
+            # puts y
+            # puts y.class
+            # puts y.interval
+            # puts y.date_start
+            # puts next_interval
+
+            response.status = 201
+            { message: 'Request edited', data: req }.to_json
+          rescue StandardError => error
+            puts "ERROR: #{error.inspect}"
+            puts error.backtrace
+            routing.halt 404, { message: 'Request not found' }.to_json
           end
         end
 
