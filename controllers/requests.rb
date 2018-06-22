@@ -61,6 +61,7 @@ module Dada
         routing.on 'edit' do
           routing.post do
             account = Account.first(username: @auth_account['username'])
+            # account = Account.first(username: 'victorlin12345')
             request = Request.first(id: req_id)
             policy = RequestPolicy.new(account, request)
             raise unless policy.can_edit?
@@ -90,7 +91,8 @@ module Dada
           rescue StandardError => error
             puts "ERROR: #{error.inspect}"
             puts error.backtrace
-            routing.halt 404, { message: 'Request not found' }.to_json
+            routing.ha
+            lt 404, { message: 'Request not found' }.to_json
           end
         end
 
