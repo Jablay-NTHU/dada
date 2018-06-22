@@ -13,13 +13,19 @@ module Dada
         routing.post do
           account = SignedRequest.new(Api.config).parse(request.body.read)
           # account = JSON.parse(routing.body.read)
+          puts account
+          puts account[:email]
           Dada::ChangePassword.call(
-            email: account['email'], edit_data: account
+            email: account[:email], edit_data: account
           )
           response.status = 201
           { message: 'Password changed' }.to_json
         rescue Sequel::MassAssignmentRestriction
           routing.halt 400, { message: 'Illegal Request' }.to_json
+        rescue StandardError => error
+          puts "ERROR CHANGING PASSWORD: #{error.inspect}"
+          puts error.backtrace
+          routing.halt 500, { message: error.message }.to_json
         end
       end
 
