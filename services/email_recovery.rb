@@ -15,7 +15,7 @@ module Dada
     end
 
     def email_available?(email_data)
-      #puts "5#{email_data}"
+      # puts "5#{email_data}"
       EmailAccount.first(email: email_data[:email])
     end
 
@@ -56,14 +56,14 @@ module Dada
         }
       )
     rescue StandardError => error
-      #puts error.message
+      # puts error.message
       raise(NotRegistered,
             'Could not send verification email; please check email address')
     end
     # rubocop:enable Metrics/MethodLength
 
     def call(registration)
-      #puts "#{registration}""
+      # puts "#{registration}""
       raise(NotRegistered, 'Cannot Find Email Account') unless
       email_available?(registration)
 

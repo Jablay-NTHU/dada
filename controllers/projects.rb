@@ -21,9 +21,9 @@ module Dada
 
             response.status = 201
             { message: 'Project deleted' }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
@@ -40,9 +40,9 @@ module Dada
 
             response.status = 201
             { message: 'Project leaved' }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
@@ -60,9 +60,9 @@ module Dada
 
             response.status = 201
             { message: 'Project edited' }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
@@ -82,9 +82,9 @@ module Dada
 
             response.status = 201
             { message: 'Collaborator added' }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
@@ -102,9 +102,9 @@ module Dada
             project.remove_collaborator(account)
             response.status = 201
             { message: 'Collaborator added' }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
@@ -126,7 +126,7 @@ module Dada
               seq = 1 if req.interval == 'daily'
               seq = 7 if req.interval == 'weekly'
               seq = 30 if req.interval == 'monthly'
-              puts seq
+              # puts seq
               next_interval = req.date_start + seq
               if (next_interval) <= req.date_end
                 Dada::Request.where(id: req.id)
@@ -142,9 +142,9 @@ module Dada
             response.status = 201
             response['Location'] = "#{@proj_route}/#{proj_id}/request"
             { message: 'Request saved', data: req }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Project not found' }.to_json
           end
         end
@@ -159,7 +159,7 @@ module Dada
           project.full_details
                  .merge(policies: policy.summary)
                  .to_json
-        rescue StandardError
+        rescue StandardError # => error
           # puts "ERROR: #{error.inspect}"
           # puts error.backtrace
           routing.halt 404, { message: 'Project not found' }.to_json
@@ -175,9 +175,9 @@ module Dada
         project_list = Projects.new(viewable_projects, account)
         project_list.to_json
         # JSON.pretty_generate(proj)
-      rescue StandardError => error
-        puts "ERROR: #{error.inspect}"
-        puts error.backtrace
+      rescue StandardError # => error
+        # puts "ERROR: #{error.inspect}"
+        # puts error.backtrace
         routing.halt 403, { message: 'Could not find projects' }.to_json
       end
 
@@ -193,9 +193,9 @@ module Dada
         { message: 'Project saved', data: new_proj }.to_json
       rescue Sequel::MassAssignmentRestriction
         routing.halt 400, { message: 'Illegal Request' }.to_json
-      rescue StandardError => error
-        puts "ERROR: #{error.inspect}"
-        puts error.backtrace
+      rescue StandardError # => error
+        # puts "ERROR: #{error.inspect}"
+        # puts error.backtrace
         routing.halt 500, { message: error.message }.to_json
       end
     end

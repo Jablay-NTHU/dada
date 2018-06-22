@@ -16,9 +16,9 @@ module Dada
           { message: 'Verification email sent' }.to_json
         rescue NotRegistered => error
           routing.halt 400, { message: error.message }.to_json
-        rescue StandardError => error
-          puts "ERROR VERIFYING Email:  #{error.inspect}"
-          puts error.message
+        rescue StandardError # => error
+          # puts "ERROR VERIFYING Email:  #{error.inspect}"
+          # puts error.message
           routing.halt 500
         end
       end
@@ -31,11 +31,11 @@ module Dada
           sso_account, auth_token =
             AuthenticateGithubAccount.new(Api.config)
                                      .call(auth_request[:access_token])
-          puts "sso: #{sso_account}"
+          # puts "sso: #{sso_account}"
           { account: sso_account, auth_token: auth_token }.to_json
-        rescue StandardError => error
-          puts "FAILED to validate Github account: #{error.inspect}"
-          puts error.backtrace
+        rescue StandardError # => error
+          # puts "FAILED to validate Github account: #{error.inspect}"
+          # puts error.backtrace
           routing.halt 400
         end
 
@@ -43,14 +43,14 @@ module Dada
         routing.post 'google_account' do
           auth_request = SignedRequest.new(Api.config)
                                       .parse(request.body.read)
-          puts "auth_req: #{auth_request}"
+          # puts "auth_req: #{auth_request}"
           sso_account, auth_token =
             AuthenticateGoogleAccount.new(Api.config)
                                      .call(auth_request[:access_token])
           { account: sso_account, auth_token: auth_token }.to_json
         rescue StandardError => error
-          puts "FAILED to validate Google account: #{error.inspect}"
-          puts error.backtrace
+          # puts "FAILED to validate Google account: #{error.inspect}"
+          # puts error.backtrace
           routing.halt 400
         end
 
@@ -77,9 +77,9 @@ module Dada
           { message: 'Verification email sent' }.to_json
         rescue InvalidRegistration => error
           routing.halt 400, { message: error.message }.to_json
-        rescue StandardError => error
-          puts "ERROR VERIFYING REGISTRATION:  #{error.inspect}"
-          puts error.message
+        rescue StandardError # => error
+          # puts "ERROR VERIFYING REGISTRATION:  #{error.inspect}"
+          # puts error.message
           routing.halt 500
         end
       end

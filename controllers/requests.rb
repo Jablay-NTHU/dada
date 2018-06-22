@@ -33,9 +33,9 @@ module Dada
             )
             response.status = 201
             { message: 'Response added', data: request }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Request not found' }.to_json
           end
         end
@@ -50,11 +50,10 @@ module Dada
             Request.where(id: req_id).destroy
             response.status = 201
             { message: 'Request deleted', data: request }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
-            routing.ha
-            lt 404, { message: 'Request not found' }.to_json
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
+            routing.halt 404, { message: 'Request not found' }.to_json
           end
         end
 
@@ -88,9 +87,9 @@ module Dada
 
             response.status = 201
             { message: 'Request edited', data: req }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Request not found' }.to_json
           end
         end
