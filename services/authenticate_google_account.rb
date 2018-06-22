@@ -30,7 +30,9 @@ module Dada
 
     def find_or_create_sso_account(google_account)
       puts "Sso_ggl: #{SsoAccount.first(google_account)}"
-      SsoAccount.first(email:google_account[:email]) || SsoAccount.create(google_account)
+      SsoAccount.first(email:google_account[:email]) ||
+        EmailAccount.first(email: google_account[:email]) ||
+        SsoAccount.create(google_account)
     end
 
     class GglAccount

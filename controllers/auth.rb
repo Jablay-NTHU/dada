@@ -31,7 +31,7 @@ module Dada
           sso_account, auth_token =
             AuthenticateGithubAccount.new(Api.config)
                                      .call(auth_request[:access_token])
-          puts "sso: #{sso_account}"
+          # puts "sso: #{sso_account}"
           { account: sso_account, auth_token: auth_token }.to_json
         rescue StandardError => error
           puts "FAILED to validate Github account: #{error.inspect}"
@@ -43,7 +43,7 @@ module Dada
         routing.post 'google_account' do
           auth_request = SignedRequest.new(Api.config)
                                       .parse(request.body.read)
-          puts "auth_req: #{auth_request}"
+          # puts "auth_req: #{auth_request}"
           sso_account, auth_token =
             AuthenticateGoogleAccount.new(Api.config)
                                      .call(auth_request[:access_token])
@@ -75,8 +75,8 @@ module Dada
 
           response.status = 201
           { message: 'Verification email sent' }.to_json
-        rescue InvalidRegistration => error
-          routing.halt 400, { message: error.message }.to_json
+        # rescue InvalidRegistration => error
+        #   routing.halt 400, { message: error.message }.to_json
         rescue StandardError => error
           puts "ERROR VERIFYING REGISTRATION:  #{error.inspect}"
           puts error.message
