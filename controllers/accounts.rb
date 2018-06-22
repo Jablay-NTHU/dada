@@ -81,8 +81,8 @@ module Dada
         routing.get do
           raise unless username == @auth_account['username']
           account = Account.first(username: @auth_account['username'])
-          puts account
-          puts '---------'
+          # puts account
+          # puts '---------'
           account ? account.to_json : raise('Account not found')
         rescue StandardError => error
           puts "ERROR GETTING ACCOUNT: #{error.inspect}"

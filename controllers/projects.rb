@@ -150,8 +150,8 @@ module Dada
 
       # GET api/v1/projects
       routing.get do
-        # account = Account.first(username: 'agoeng.bhimasta')
-        account = Account.first(username: @auth_account['username'])
+        account = Account.first(username: 'agoeng.bhimasta')
+        # account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable
         project_list = Projects.new(viewable_projects, account)
