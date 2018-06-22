@@ -75,8 +75,8 @@ module Dada
 
           response.status = 201
           { message: 'Verification email sent' }.to_json
-        rescue InvalidRegistration => error
-          routing.halt 400, { message: error.message }.to_json
+        # rescue InvalidRegistration => error
+        #   routing.halt 400, { message: error.message }.to_json
         rescue StandardError => error
           puts "ERROR VERIFYING REGISTRATION:  #{error.inspect}"
           puts error.message
