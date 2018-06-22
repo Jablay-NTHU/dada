@@ -68,8 +68,7 @@ module Dada
             req_data = JSON.parse(routing.body.read)
             Request.where(id: req_id).update(req_data)
             req = Request.first(id: req_id)
-            # puts req
-            # if !once --> time = 1 / 7 / 30
+
             next_interval = ''
             if req.interval != 'once'
               seq = 1 if req.interval == 'daily'
@@ -79,12 +78,6 @@ module Dada
               next_interval = '' if next_interval > req.date_end
             end
             Dada::Request.where(id: req_id).update(next_request: next_interval)
-            # puts y
-            # puts y.class
-            # puts y.interval
-            # puts y.date_start
-            # puts next_interval
-
             response.status = 201
             { message: 'Request edited', data: req }.to_json
           rescue StandardError => error

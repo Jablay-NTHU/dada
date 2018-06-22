@@ -121,7 +121,6 @@ module Dada
             req = Dada::CreateRequestForProject.call(
               project_id: proj_id, request_data: req_data
             )
-            # if !once --> time = 1 / 7 / 30
             if req.interval != 'once'
               seq = 1 if req.interval == 'daily'
               seq = 7 if req.interval == 'weekly'
@@ -133,12 +132,6 @@ module Dada
                              .update(next_request: next_interval)
               end
             end
-            # puts y
-            # puts y.class
-            # puts y.interval
-            # puts y.date_start
-            # puts next_interval
-
             response.status = 201
             response['Location'] = "#{@proj_route}/#{proj_id}/request"
             { message: 'Request saved', data: req }.to_json
@@ -151,7 +144,6 @@ module Dada
 
         # GET api/v1/projects/[proj_id]
         routing.get do
-          # account = Account.first(username: 'agoeng.bhimasta')
           account = Account.first(username: @auth_account['username'])
           project = Project.first(id: proj_id)
           policy = ProjectPolicy.new(account, project)
@@ -168,13 +160,11 @@ module Dada
 
       # GET api/v1/projects
       routing.get do
-        # account = Account.first(username: 'agoeng.bhimasta')
         account = Account.first(username: @auth_account['username'])
         projects_scope = ProjectPolicy::AccountScope.new(account)
         viewable_projects = projects_scope.viewable
         project_list = Projects.new(viewable_projects, account)
         project_list.to_json
-        # JSON.pretty_generate(proj)
       rescue StandardError # => error
         # puts "ERROR: #{error.inspect}"
         # puts error.backtrace
