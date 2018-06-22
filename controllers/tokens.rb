@@ -20,9 +20,9 @@ module Dada
           token.full_details
                .merge(policies: policy.summary)
                .to_json
-        rescue StandardError => error
-          puts "ERROR: #{error.inspect}"
-          puts error.backtrace
+        rescue StandardError # => error
+          # puts "ERROR: #{error.inspect}"
+          # puts error.backtrace
           routing.halt 404, { message: 'Token not found' }.to_json
         end
       end
@@ -34,9 +34,9 @@ module Dada
         tokens_scope = TokenPolicy::AccountScope.new(account)
         viewable_tokens = tokens_scope.viewable
         JSON.pretty_generate(viewable_tokens)
-      rescue StandardError => error
-        puts "ERROR: #{error.inspect}"
-        puts error.backtrace
+      rescue StandardError # => error
+        # puts "ERROR: #{error.inspect}"
+        # puts error.backtrace
         routing.halt 403, { message: 'Could not find tokens' }.to_json
       end
     end

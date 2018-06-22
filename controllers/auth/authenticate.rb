@@ -15,9 +15,9 @@ module Dada
             AuthenticateSsoAccount.new(Api.config)
                                   .call(auth_request[:access_token])
           { account: sso_account, auth_token: auth_token }.to_json
-        rescue StandardError => error
-          puts "FAILED to validate Github account: #{error.inspect}"
-          puts error.backtrace
+        rescue StandardError # => error
+          # puts "FAILED to validate Github account: #{error.inspect}"
+          # puts error.backtrace
           routing.halt 400
         end
 
@@ -26,8 +26,8 @@ module Dada
           credentials = JsonRequestBody.parse_symbolize(request.body.read)
           auth_account = AuthenticateEmailAccount.call(credentials)
           auth_account.to_json
-        rescue StandardError => error
-          puts "ERROR: #{error.class}: #{error.message}"
+        rescue StandardError # => error
+          # puts "ERROR: #{error.class}: #{error.message}"
           routing.halt '403', { message: 'Invalid credentials' }.to_json
         end
       end

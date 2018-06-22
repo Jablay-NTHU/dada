@@ -21,9 +21,9 @@ module Dada
             Response.where(id: res_id).destroy
             response.status = 201
             { message: 'Response deleted', data: res }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Request not found' }.to_json
           end
         end
@@ -38,9 +38,9 @@ module Dada
             Response.where(id: res_id).destroy
             response.status = 201
             { message: 'Response deleted', data: res }.to_json
-          rescue StandardError => error
-            puts "ERROR: #{error.inspect}"
-            puts error.backtrace
+          rescue StandardError # => error
+            # puts "ERROR: #{error.inspect}"
+            # puts error.backtrace
             routing.halt 404, { message: 'Request not found' }.to_json
           end
         end
