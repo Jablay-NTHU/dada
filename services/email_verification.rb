@@ -53,7 +53,8 @@ module Dada
           ]
         }
       )
-    rescue StandardError
+    rescue StandardError => error
+      puts error.message
       raise(InvalidRegistration,
             'Could not send verification email; please check email address')
     end
@@ -62,8 +63,7 @@ module Dada
     def call(registration)
       raise(InvalidRegistration, 'Username already exists') unless
         username_available?(registration)
-
-      send_email_verification(registration)
+        send_email_verification(registration)
     end
   end
 end
