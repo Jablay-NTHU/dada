@@ -15,9 +15,9 @@ module Dada
             AuthenticateSsoAccount.new(Api.config)
                                   .call(auth_request[:access_token])
           { account: sso_account, auth_token: auth_token }.to_json
-        rescue StandardError # => error
-          # puts "FAILED to validate Github account: #{error.inspect}"
-          # puts error.backtrace
+        rescue StandardError => error
+          puts "FAILED to validate Github account: #{error.inspect}"
+          puts error.backtrace
           routing.halt 400
         end
 
